@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# 🤖 Discord AI Bot
-=======
 # 🤖 Tatiana Discord AI Bot
->>>>>>> 377034b (first commit)
 
 <div align="center">
 
@@ -46,30 +42,6 @@ Este bot de Discord utiliza la API de Gemini AI para generar respuestas intelige
    cd discord-ai-bot
    ```
 
-<<<<<<< HEAD
-Estas mejoras abarcan una amplia gama de aspectos y pueden implementarse gradualmente para mejorar la funcionalidad, seguridad y mantenibilidad de Tatiana.
-
-BOT/
-│
-├── src/
-│   ├── bot/
-│   │   
-│   │   
-│   ├── chat/
-│   │   
-│   │   
-│   ├── config/
-│   │   
-│   │   
-│   └── utils/
-│       
-│       
-│
-├── main.py
-├── .env
-├── .gitignore
-└── README.md
-=======
 2. **Instalar dependencias**
    ```bash
    pip install -r requirements.txt
@@ -147,9 +119,14 @@ Para cambios importantes, por favor abre primero un issue para discutirlos.
 
 ---
 
+## 📄 Licencia
+
+Este proyecto está bajo la [Licencia MIT](https://opensource.org/licenses/MIT). Consulta el archivo `LICENSE` para más detalles.
+
+---
+
 <div align="center">
   <img src="https://img.shields.io/badge/Hecho%20con-❤️-ff69b4.svg" alt="Hecho con amor">
   <br>
-  por ItsJhonAlex
+  Desarrollado con pasión por ItsJhonAlex
 </div>
->>>>>>> 3818797 (Implementar configuración y mejorar la estructura del proyecto)
