@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # 🤖 Discord AI Bot
+=======
+# 🤖 Tatiana Discord AI Bot
+>>>>>>> 377034b (first commit)
 
 <div align="center">
 
