@@ -1,0 +1,58 @@
+# Entorno virtual
+venv/
+env/
+.venv/
+
+# Archivos de entorno
+.env
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Archivos de distribución / empaquetado
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+
+# Archivos de logs
+*.log
+
+# Archivos de base de datos
+*.db
+*.sqlite3
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de IDEs y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos de configuración local
+config.ini
+settings.json
+
+# Archivos de caché de pytest
+.pytest_cache/
+
+# Archivos de cobertura
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
