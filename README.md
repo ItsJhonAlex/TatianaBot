@@ -67,6 +67,11 @@ Este bot de Discord utiliza la API de Gemini AI para generar respuestas intelige
 El bot responderá automáticamente a los mensajes en el canal configurado. Además, ofrece comandos específicos:
 
 - `/ping`: Muestra la latencia actual del bot
+- `/meme`: Genera un meme aleatorio
+- `/8ball`: La magica bola 8
+- `/balance`: Muestra tu balance actual de monedas virtuales
+- `/daily`: Reclama tu recompensa diaria de monedas
+- `/transferir [usuario] [cantidad]`: Transfiere monedas a otro usuario
 
 ---
 
@@ -100,7 +105,7 @@ async def setup(bot):
 ### ⚙️ Personalización del bot
 
 - **Configuración global**: Modifica `src/config/settings.py`
-- **Integración con IA**: Ajusta `src/ai/gemini_interface.py`
+- **Integración con IA**: Ajusta `src/chat/gemini_interface.py`
 
 ---
 
