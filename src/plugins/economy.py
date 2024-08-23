@@ -11,7 +11,6 @@ class EconomiaPlugin(commands.Cog):
         self.currency_name = "monedas"
         self.data_dir = os.path.join(os.path.dirname(__file__), '..', 'data')
         self.data_file = os.path.join(self.data_dir, 'economia_data.json')
-        self.users = self.load_data()
 
     def load_data(self):
         if not os.path.exists(self.data_dir):
@@ -21,29 +20,33 @@ class EconomiaPlugin(commands.Cog):
                 return json.load(f)
         return {}
 
-    def save_data(self):
+    def save_data(self, data):
         with open(self.data_file, 'w') as f:
-            json.dump(self.users, f)
+            json.dump(data, f)
 
     def get_balance(self, user_id):
-        return self.users.get(str(user_id), {}).get("balance", 0)
+        data = self.load_data()
+        return data.get(str(user_id), {}).get("balance", 0)
 
     def update_balance(self, user_id, amount):
+        data = self.load_data()
         user_id = str(user_id)
-        if user_id not in self.users:
-            self.users[user_id] = {"balance": 0, "pokemons": []}
-        self.users[user_id]["balance"] += amount
-        self.save_data()
+        if user_id not in data:
+            data[user_id] = {"balance": 0, "pokemons": []}
+        data[user_id]["balance"] += amount
+        self.save_data(data)
 
     def add_pokemon(self, user_id, pokemon):
+        data = self.load_data()
         user_id = str(user_id)
-        if user_id not in self.users:
-            self.users[user_id] = {"balance": 0, "pokemons": []}
-        self.users[user_id]["pokemons"].append(pokemon)
-        self.save_data()
+        if user_id not in data:
+            data[user_id] = {"balance": 0, "pokemons": []}
+        data[user_id]["pokemons"].append(pokemon)
+        self.save_data(data)
 
     def get_pokemons(self, user_id):
-        return self.users.get(str(user_id), {}).get("pokemons", [])
+        data = self.load_data()
+        return data.get(str(user_id), {}).get("pokemons", [])
 
     @app_commands.command(name="balance", description="Muestra tu balance actual")
     async def balance(self, interaction: discord.Interaction):
@@ -74,15 +77,6 @@ class EconomiaPlugin(commands.Cog):
         self.update_balance(interaction.user.id, -cantidad)
         self.update_balance(usuario.id, cantidad)
         await interaction.response.send_message(f"Has transferido {cantidad} {self.currency_name} a {usuario.mention}.")
-
-    @app_commands.command(name="inventario", description="Muestra tu inventario de Pokémon")
-    async def inventario(self, interaction: discord.Interaction):
-        pokemons = self.get_pokemons(interaction.user.id)
-        if not pokemons:
-            await interaction.response.send_message("No tienes ningún Pokémon en tu inventario.")
-        else:
-            pokemon_list = "\n".join(pokemons)
-            await interaction.response.send_message(f"Tu inventario de Pokémon:\n{pokemon_list}")
 
 async def setup(bot):
     await bot.add_cog(EconomiaPlugin(bot))

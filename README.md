@@ -30,7 +30,7 @@ Este bot de Discord utiliza la API de Gemini AI para generar respuestas intelige
 
 ### Requisitos previos
 
-- Python 3.8+
+- Python 3.12+
 - Cuenta de Discord con permisos para crear bots
 - Clave API de Gemini AI
 
@@ -38,8 +38,8 @@ Este bot de Discord utiliza la API de Gemini AI para generar respuestas intelige
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/tu-usuario/discord-ai-bot.git
-   cd discord-ai-bot
+   git clone https://github.com/ItsJhonAlex/TatianaBot
+   cd TatianaBot
    ```
 
 2. **Instalar dependencias**
@@ -66,17 +66,13 @@ Este bot de Discord utiliza la API de Gemini AI para generar respuestas intelige
 
 El bot responderá automáticamente a los mensajes en el canal configurado. Además, ofrece comandos específicos:
 
-## 🎮 Uso del bot
-
-El bot responderá automáticamente a los mensajes en el canal configurado. Además, ofrece comandos específicos:
-
 - `/ping`: Muestra la latencia actual del bot
 - `/meme`: Genera un meme aleatorio
 - `/8ball`: La magica bola 8
 - `/balance`: Muestra tu balance actual de monedas virtuales
 - `/daily`: Reclama tu recompensa diaria de monedas
 - `/transferir [usuario] [cantidad]`: Transfiere monedas a otro usuario
-- `/cazar_pokemon`: Caza un Pokémon y gana monedas
+- `/pokemon`: Caza un Pokémon y gana monedas
 - `/inventario`: Muestra tu inventario de Pokémon
 
 ---

@@ -17,6 +17,7 @@ class DiscordBot(commands.Bot):
 
     async def on_ready(self):
         print(f'Nos hemos conectado como {self.user}')
+        await self.change_presence(activity=discord.Game(name="Siendo Tatiana"))
         try:
             channel = self.get_channel(Settings.CHANNEL_ID)
             if channel:
