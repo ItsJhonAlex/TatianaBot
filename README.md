@@ -66,12 +66,18 @@ Este bot de Discord utiliza la API de Gemini AI para generar respuestas intelige
 
 El bot responderá automáticamente a los mensajes en el canal configurado. Además, ofrece comandos específicos:
 
+## 🎮 Uso del bot
+
+El bot responderá automáticamente a los mensajes en el canal configurado. Además, ofrece comandos específicos:
+
 - `/ping`: Muestra la latencia actual del bot
 - `/meme`: Genera un meme aleatorio
 - `/8ball`: La magica bola 8
 - `/balance`: Muestra tu balance actual de monedas virtuales
 - `/daily`: Reclama tu recompensa diaria de monedas
 - `/transferir [usuario] [cantidad]`: Transfiere monedas a otro usuario
+- `/cazar_pokemon`: Caza un Pokémon y gana monedas
+- `/inventario`: Muestra tu inventario de Pokémon
 
 ---
 
@@ -135,3 +141,4 @@ Este proyecto está bajo la [Licencia MIT](https://opensource.org/licenses/MIT).
   <br>
   Desarrollado con pasión por ItsJhonAlex
 </div>
+
