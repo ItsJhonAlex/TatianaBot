@@ -4,6 +4,7 @@ from discord.ext import commands
 import json
 import os
 import random
+import time
 
 class EconomiaPlugin(commands.Cog):
     """
@@ -57,6 +58,19 @@ class EconomiaPlugin(commands.Cog):
     def get_commands(self):
         return [command for command in self.bot.tree.walk_commands() if command.binding == self]
 
+    def get_last_daily(self, user_id):
+        data = self.load_data()
+        return data.get(str(user_id), {}).get("last_daily")
+
+    def set_last_daily(self, user_id, timestamp):
+        data = self.load_data()
+        user_id = str(user_id)
+        if user_id not in data:
+            data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": [], "last_daily": timestamp}
+        else:
+            data[user_id]["last_daily"] = timestamp
+        self.save_data(data)
+
     @app_commands.command(name="balance", description="Muestra tu balance actual")
     async def balance(self, interaction: discord.Interaction):
         balance = self.get_balance(interaction.user.id)
@@ -71,8 +85,19 @@ class EconomiaPlugin(commands.Cog):
 
     @app_commands.command(name="daily", description="Reclama tu recompensa diaria")
     async def daily(self, interaction: discord.Interaction):
+        current_time = int(time.time())
+        last_daily = self.get_last_daily(interaction.user.id)
+        
+        if last_daily is not None and current_time - last_daily < 86400:  # 86400 segundos = 24 horas
+            time_left = 86400 - (current_time - last_daily)
+            hours, remainder = divmod(time_left, 3600)
+            minutes, seconds = divmod(remainder, 60)
+            await interaction.response.send_message(f"Aún no puedes reclamar tu recompensa diaria. Tiempo restante: {int(hours)}h {int(minutes)}m {int(seconds)}s", ephemeral=True)
+            return
+
         amount = random.randint(10, 100)
         self.update_balance(interaction.user.id, amount)
+        self.set_last_daily(interaction.user.id, current_time)
         await interaction.response.send_message(f"¡Has reclamado {amount} {self.currency_name}!")
 
     @app_commands.command(name="transferir", description="Transfiere monedas a otro usuario")

@@ -103,13 +103,15 @@ class PokemonCatchView(discord.ui.View):
         self.plugin = plugin
         self.pokemon_name = pokemon_name
         self.catch_rate = catch_rate
-        self.captured = False
+        self.users_attempted = set()
 
     @discord.ui.button(label="Cazar Pokémon", style=discord.ButtonStyle.primary)
     async def catch_pokemon(self, interaction: discord.Interaction, button: discord.ui.Button):
-        if self.captured:
-            await interaction.response.send_message("Este Pokémon ya ha sido capturado.", ephemeral=True)
+        if interaction.user.id in self.users_attempted:
+            await interaction.response.send_message("Ya has intentado cazar este Pokémon.", ephemeral=True)
             return
+
+        self.users_attempted.add(interaction.user.id)
 
         if random.random() <= self.catch_rate:
             self.plugin.add_pokemon(interaction.user.id, self.pokemon_name)
@@ -123,6 +125,10 @@ class PokemonCatchView(discord.ui.View):
             await interaction.response.send_message(f"¡Felicidades! Has cazado un {self.pokemon_name} y ganado 10 {self.plugin.currency_name}.", ephemeral=True)
         else:
             await interaction.response.send_message(f"¡Oh no! El {self.pokemon_name} escapó.", ephemeral=True)
+
+        if len(self.users_attempted) >= len(interaction.channel.members):
+            await interaction.message.edit(view=None)
+            self.stop()
 
 async def setup(bot):
     await bot.add_cog(PokemonPlugin(bot))

@@ -6,6 +6,7 @@ from src.chat.gemini_interface import GeminiInterface
 from src.core.system import handle_power_control
 from src.plugins import load_plugins
 import os
+import aiohttp
 
 class DiscordBot(commands.Bot):
     def __init__(self, intents):
@@ -15,6 +16,7 @@ class DiscordBot(commands.Bot):
     async def setup_hook(self):
         await load_plugins(self)
         await self.tree.sync()
+        print("Comandos de prefijo y de barra cargados.")
 
     async def on_ready(self):
         print(f'Nos hemos conectado como {self.user}')
@@ -41,15 +43,16 @@ class DiscordBot(commands.Bot):
                     await self.clear_channel_messages(channel)
 
                 start_response = GeminiInterface.generate_text(self.convo, GeminiInterface.get_start_message())
-
-                chunks = self.split_message(start_response)
-                for chunk in chunks:
-                    await channel.send(chunk)
+                if start_response is not None:
+                    chunks = self.split_message(start_response)
+                    for chunk in chunks:
+                        await channel.send(chunk)
+                else:
+                    print("No se pudo generar el mensaje de inicio debido a un error de IA.")
             else:
                 print(f"Canal con ID {Settings.CHANNEL_ID} no encontrado.")
         except Exception as e:
-            channel = self.get_channel(Settings.CHANNEL_ID)
-            await channel.send(f"Ocurrió un error. ```{e}```")
+            print(f"Ocurrió un error al iniciar: {e}")
 
     async def on_message(self, message):
         if message.author == self.user:
@@ -65,22 +68,33 @@ class DiscordBot(commands.Bot):
                         async with message.channel.typing():
                             if message.content:
                                 response = GeminiInterface.generate_text(self.convo, formatted_message)
-                                if Settings.POWER_CONTROL:
-                                    await handle_power_control(message, response)
+                                if response is not None:
+                                    if Settings.POWER_CONTROL:
+                                        await handle_power_control(message, response)
+                                    chunks = self.split_message(response)
+                                    for chunk in chunks:
+                                        if len(chunk) > 2000:
+                                            raise ValueError("El fragmento excede los 2000 caracteres.")
+                                        await message.reply(chunk)
+                                else:
+                                    print("No se pudo generar una respuesta debido a un error de IA.")
                     else:
                         if message.content:
                             response = GeminiInterface.generate_text(self.convo, formatted_message)
-                            if Settings.POWER_CONTROL:
-                                await handle_power_control(message, response)
-                        
-                    chunks = self.split_message(response)
-                    for chunk in chunks:
-                        if len(chunk) > 2000:
-                            raise ValueError("El fragmento excede los 2000 caracteres.")
-                        await message.reply(chunk)
+                            if response is not None:
+                                if Settings.POWER_CONTROL:
+                                    await handle_power_control(message, response)
+                                chunks = self.split_message(response)
+                                for chunk in chunks:
+                                    if len(chunk) > 2000:
+                                        raise ValueError("El fragmento excede los 2000 caracteres.")
+                                    await message.reply(chunk)
+                            else:
+                                print("No se pudo generar una respuesta debido a un error de IA.")
                 except Exception as e:
-                    channel = self.get_channel(Settings.CHANNEL_ID)
-                    await channel.send(f"Ocurrió un error. ```{e}```")
+                    print(f"Ocurrió un error al procesar el mensaje: {e}")
+        
+        await self.process_commands(message)
 
     @staticmethod
     def split_message(message, max_length=2000):

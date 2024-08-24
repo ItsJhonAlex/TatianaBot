@@ -28,6 +28,7 @@ Este bot de Discord utiliza la API de Gemini AI para generar respuestas intelige
 - 📚 Sistema de ayuda interactivo con menú de categorías
 - ⚙️ Configuración centralizada y fácil de personalizar
 - 🛠️ Robusto manejo de errores y sistema de logging
+- 🔢 Soporte para comandos con prefijo y comandos de barra (/)
 
 ---
 
@@ -128,6 +129,34 @@ Este plugin se integrará automáticamente con el sistema de menú de ayuda, apa
 - **Configuración global**: Modifica `src/config/settings.py`
 - **Integración con IA**: Ajusta `src/chat/gemini_interface.py`
 - **Sistema de ayuda**: Personaliza `src/plugins/help.py` 
+- **Comandos con prefijo**: Añade nuevos comandos en `src/plugins/commands/`
+
+### 📝 Ejemplo de plugin con comandos de prefijo
+
+Aquí tienes un ejemplo de cómo crear un plugin que utiliza comandos con prefijo:
+
+```python
+from discord.ext import commands
+import discord
+
+class EjemploComandos(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name="saludo", description="Saluda al usuario")
+    async def saludo(self, ctx):
+        await ctx.send(f"¡Hola, {ctx.author.name}!")
+
+    @commands.command(name="dado", description="Tira un dado")
+    async def dado(self, ctx):
+        resultado = random.randint(1, 6)
+        await ctx.send(f"🎲 El dado cayó en: {resultado}")
+
+async def setup(bot):
+    await bot.add_cog(EjemploComandos(bot))
+```
+
+Guarda este archivo en `src/plugins/commands/ejemplo_comandos.py` y el bot lo cargará automáticamente.
 
 ---
 

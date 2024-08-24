@@ -136,26 +136,32 @@ class YugiohCatchView(discord.ui.View):
         self.plugin = plugin
         self.card_name = card_name
         self.catch_rate = catch_rate
-        self.captured = False
+        self.users_attempted = set()
 
     @discord.ui.button(label="Obtener Carta", style=discord.ButtonStyle.primary)
     async def catch_card(self, interaction: discord.Interaction, button: discord.ui.Button):
-        if self.captured:
-            await interaction.response.send_message("Esta carta ya ha sido obtenida.", ephemeral=True)
+        if interaction.user.id in self.users_attempted:
+            await interaction.response.send_message("Ya has intentado obtener esta carta.", ephemeral=True)
             return
+
+        self.users_attempted.add(interaction.user.id)
 
         if random.random() <= self.catch_rate:
             self.plugin.add_yugioh_card(interaction.user.id, self.card_name)
-            self.plugin.update_balance(interaction.user.id, 10)  # Recompensa de 10 monedas
-            self.captured = True
+            self.plugin.update_balance(interaction.user.id, 10)
 
             embed = interaction.message.embeds[0]
             embed.color = discord.Color.green()
             embed.set_footer(text=f"Obtenida por {interaction.user.name}", icon_url=interaction.user.avatar.url if interaction.user.avatar else None)
             await interaction.message.edit(embed=embed, view=None)
-            await interaction.response.send_message(f"¡Felicidades! Has obtenido {self.card_name} y ganado 10 {self.plugin.currency_name}.", ephemeral=True)
+            await interaction.response.send_message(f"¡Felicidades! Has obtenido {self.card_name} y ganado 10 {self.plugin.currency_name}.")
+            self.stop()
         else:
             await interaction.response.send_message(f"¡Oh no! No pudiste obtener {self.card_name}.", ephemeral=True)
+
+        if len(self.users_attempted) >= len(interaction.channel.members):
+            await interaction.message.edit(view=None)
+            self.stop()
 
 async def setup(bot):
     await bot.add_cog(YugiohPlugin(bot))
