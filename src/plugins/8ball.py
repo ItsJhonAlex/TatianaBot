@@ -4,6 +4,11 @@ from discord.ext import commands
 import random
 
 class Magic8BallPlugin(commands.Cog):
+    """
+    Este plugin simula una bola 8 mágica, respondiendo preguntas de manera aleatoria.
+    """
+    name = "🎱 Bola 8 Mágica"
+
     def __init__(self, bot):
         self.bot = bot
         self.responses = [
@@ -28,6 +33,9 @@ class Magic8BallPlugin(commands.Cog):
             "Las perspectivas no son muy buenas.",
             "Muy dudoso."
         ]
+
+    def get_commands(self):
+        return [command for command in self.bot.tree.walk_commands() if command.binding == self]
 
     @app_commands.command(name="8ball", description="Haz una pregunta a la bola 8 mágica")
     async def magic_8ball(self, interaction: discord.Interaction, pregunta: str):

@@ -3,9 +3,17 @@ from discord import app_commands
 from discord.ext import commands
 
 class PollPlugin(commands.Cog):
+    """
+    Este plugin permite crear encuestas rápidas con múltiples opciones.
+    """
+    name = "📊 Encuestas"
+
     def __init__(self, bot):
         self.bot = bot
         self.emoji_options = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
+
+    def get_commands(self):
+        return [command for command in self.bot.tree.walk_commands() if command.binding == self]
 
     @app_commands.command(name="encuesta", description="Crea una encuesta rápida")
     @app_commands.describe(

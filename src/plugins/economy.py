@@ -6,11 +6,17 @@ import os
 import random
 
 class EconomiaPlugin(commands.Cog):
+    """
+    Este plugin proporciona comandos para gestionar la economía del servidor,
+    incluyendo balance, recompensas diarias y transferencias de monedas entre usuarios.
+    """
+    name = "💰 Economía"
+
     def __init__(self, bot):
         self.bot = bot
         self.currency_name = "monedas"
         self.data_dir = os.path.join(os.path.dirname(__file__), '..', 'data')
-        self.data_file = os.path.join(self.data_dir, 'economia_data.json')
+        self.data_file = os.path.join(self.data_dir, 'user_data.json')
 
     def load_data(self):
         if not os.path.exists(self.data_dir):
@@ -32,7 +38,7 @@ class EconomiaPlugin(commands.Cog):
         data = self.load_data()
         user_id = str(user_id)
         if user_id not in data:
-            data[user_id] = {"balance": 0, "pokemons": []}
+            data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": []}
         data[user_id]["balance"] += amount
         self.save_data(data)
 
@@ -40,7 +46,7 @@ class EconomiaPlugin(commands.Cog):
         data = self.load_data()
         user_id = str(user_id)
         if user_id not in data:
-            data[user_id] = {"balance": 0, "pokemons": []}
+            data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": []}
         data[user_id]["pokemons"].append(pokemon)
         self.save_data(data)
 
@@ -48,10 +54,20 @@ class EconomiaPlugin(commands.Cog):
         data = self.load_data()
         return data.get(str(user_id), {}).get("pokemons", [])
 
+    def get_commands(self):
+        return [command for command in self.bot.tree.walk_commands() if command.binding == self]
+
     @app_commands.command(name="balance", description="Muestra tu balance actual")
     async def balance(self, interaction: discord.Interaction):
         balance = self.get_balance(interaction.user.id)
-        await interaction.response.send_message(f"Tienes {balance} {self.currency_name}.")
+        
+        embed = discord.Embed(title="💰 Tu Balance", color=discord.Color.gold())
+        embed.add_field(name="Monedas", value=f"{balance} {self.currency_name}", inline=False)
+        
+        embed.set_footer(text="Usa /daily para obtener tu recompensa diaria")
+        embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.avatar.url if interaction.user.avatar else None)
+        
+        await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="daily", description="Reclama tu recompensa diaria")
     async def daily(self, interaction: discord.Interaction):

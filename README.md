@@ -21,6 +21,7 @@ Este bot de Discord utiliza la API de Gemini AI para generar respuestas intelige
 - 🔗 Integración perfecta con Discord usando `discord.py`
 - 🧠 Generación de respuestas inteligentes con Gemini AI
 - 🧩 Arquitectura modular con sistema de plugins automáticos
+- 📚 Sistema de ayuda interactivo con menú de categorías
 - ⚙️ Configuración centralizada y fácil de personalizar
 - 🛠️ Robusto manejo de errores y sistema de logging
 
@@ -62,18 +63,20 @@ Este bot de Discord utiliza la API de Gemini AI para generar respuestas intelige
 
 ---
 
-## 🎮 Uso del bot
+## 🎮 Funcionalidades del bot
 
-El bot responderá automáticamente a los mensajes en el canal configurado. Además, ofrece comandos específicos:
+El bot ofrece una variedad de funcionalidades organizadas en diferentes categorías:
 
-- `/ping`: Muestra la latencia actual del bot
-- `/meme`: Genera un meme aleatorio
-- `/8ball`: La magica bola 8
-- `/balance`: Muestra tu balance actual de monedas virtuales
-- `/daily`: Reclama tu recompensa diaria de monedas
-- `/transferir [usuario] [cantidad]`: Transfiere monedas a otro usuario
-- `/pokemon`: Caza un Pokémon y gana monedas
-- `/inventario`: Muestra tu inventario de Pokémon
+- 🎭 Interacciones Anime: Comandos para realizar acciones como abrazar, besar, etc.
+- 💰 Economía: Sistema de monedas virtuales, balance, recompensas diarias y transferencias.
+- 🃏 Yu-Gi-Oh!: Obtención de cartas aleatorias y gestión de inventario de cartas.
+- 😂 Memes: Generación y visualización de memes aleatorios.
+- 🐾 Pokémon: Captura de Pokémon aleatorios y gestión de inventario.
+- 📊 Encuestas: Creación de encuestas rápidas con múltiples opciones.
+- 🎱 Bola 8 Mágica: Respuestas aleatorias a preguntas de sí o no.
+- 🏓 Ping: Verificación de la latencia del bot.
+
+Para ver todos los comandos disponibles, usa `/ayuda` en Discord.
 
 ---
 
@@ -82,8 +85,10 @@ El bot responderá automáticamente a los mensajes en el canal configurado. Adem
 ### 🔌 Creación de plugins
 
 1. Crea un nuevo archivo Python en `src/plugins/`
-2. Define tus comandos usando `@app_commands.command()`
-3. El bot cargará automáticamente tu plugin al iniciar
+2. Define tu clase de plugin heredando de `commands.Cog`
+3. Implementa tus comandos usando `@app_commands.command()`
+4. Asegúrate de incluir la propiedad `name` y el método `get_commands()`
+5. El bot cargará automáticamente tu plugin al iniciar
 
 Ejemplo de plugin:
 
@@ -92,22 +97,33 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-class SaludoPlugin(commands.Cog):
+class EjemploPlugin(commands.Cog):
+    """
+    Este es un plugin de ejemplo que muestra cómo crear un nuevo comando.
+    """
+    name = "🔧 Ejemplo"
+
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(name="hola", description="Saluda al usuario")
+    @app_commands.command(name="saludar", description="Saluda al usuario")
     async def saludar(self, interaction: discord.Interaction):
-        await interaction.response.send_message("¡Hola! Soy un plugin personalizado.")
+        await interaction.response.send_message(f"¡Hola, {interaction.user.name}!")
+
+    def get_commands(self):
+        return [command for command in self.bot.tree.walk_commands() if command.binding == self]
 
 async def setup(bot):
-    await bot.add_cog(SaludoPlugin(bot))
+    await bot.add_cog(EjemploPlugin(bot))
 ```
+
+Este plugin se integrará automáticamente con el sistema de menú de ayuda, apareciendo como "🔧 Ejemplo" en la lista de categorías.
 
 ### ⚙️ Personalización del bot
 
 - **Configuración global**: Modifica `src/config/settings.py`
 - **Integración con IA**: Ajusta `src/chat/gemini_interface.py`
+- **Sistema de ayuda**: Personaliza `src/plugins/help.py` 
 
 ---
 

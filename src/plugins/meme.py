@@ -5,8 +5,16 @@ import aiohttp
 import io
 
 class MemePlugin(commands.Cog):
+    """
+    Este plugin proporciona comandos para generar y mostrar memes aleatorios.
+    """
+    name = "😂 Memes"
+
     def __init__(self, bot):
         self.bot = bot
+
+    def get_commands(self):
+        return [command for command in self.bot.tree.walk_commands() if command.binding == self]
 
     @app_commands.command(name="meme", description="Genera un meme aleatorio")
     async def meme(self, interaction: discord.Interaction):

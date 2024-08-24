@@ -5,6 +5,7 @@ from src.config.settings import Settings
 from src.chat.gemini_interface import GeminiInterface
 from src.core.system import handle_power_control
 from src.plugins import load_plugins
+import os
 
 class DiscordBot(commands.Bot):
     def __init__(self, intents):
@@ -17,6 +18,21 @@ class DiscordBot(commands.Bot):
 
     async def on_ready(self):
         print(f'Nos hemos conectado como {self.user}')
+        
+        # Configurar el avatar del bot
+        avatar_path = os.path.join('src', 'assets', 'avatar.jpg')
+        try:
+            with open(avatar_path, 'rb') as avatar_file:
+                avatar_data = avatar_file.read()
+            await self.user.edit(avatar=avatar_data)
+            print("Avatar del bot actualizado con éxito.")
+        except FileNotFoundError:
+            print(f"No se encontró el archivo de avatar en {avatar_path}")
+        except discord.errors.HTTPException as e:
+            print(f"Error al actualizar el avatar: {e}")
+        except Exception as e:
+            print(f"Ocurrió un error inesperado al actualizar el avatar: {e}")
+
         await self.change_presence(activity=discord.Game(name="Siendo Tatiana"))
         try:
             channel = self.get_channel(Settings.CHANNEL_ID)

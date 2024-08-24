@@ -7,12 +7,18 @@ import os
 import json
 
 class PokemonPlugin(commands.Cog):
+    """
+    Este plugin ofrece comandos relacionados con Pokémon, incluyendo
+    la captura de Pokémon aleatorios y la gestión del inventario de Pokémon.
+    """
+    name = "🐾 Pokémon"
+
     def __init__(self, bot):
         self.bot = bot
         self.pokemon_api_url = "https://pokeapi.co/api/v2/pokemon/"
         self.currency_name = "monedas"
         self.data_dir = os.path.join(os.path.dirname(__file__), '..', 'data')
-        self.data_file = os.path.join(self.data_dir, 'economia_data.json')
+        self.data_file = os.path.join(self.data_dir, 'user_data.json')
 
     def load_data(self):
         if os.path.exists(self.data_file):
@@ -28,7 +34,7 @@ class PokemonPlugin(commands.Cog):
         data = self.load_data()
         user_id = str(user_id)
         if user_id not in data:
-            data[user_id] = {"balance": 0, "pokemons": []}
+            data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": []}
         data[user_id]["balance"] += amount
         self.save_data(data)
 
@@ -36,9 +42,12 @@ class PokemonPlugin(commands.Cog):
         data = self.load_data()
         user_id = str(user_id)
         if user_id not in data:
-            data[user_id] = {"balance": 0, "pokemons": []}
+            data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": []}
         data[user_id]["pokemons"].append(pokemon)
         self.save_data(data)
+
+    def get_commands(self):
+        return [command for command in self.bot.tree.walk_commands() if command.binding == self]
 
     @app_commands.command(name="inventario", description="Muestra tu inventario de Pokémon")
     async def inventario(self, interaction: discord.Interaction):
@@ -47,8 +56,21 @@ class PokemonPlugin(commands.Cog):
         if not pokemons:
             await interaction.response.send_message("No tienes ningún Pokémon en tu inventario.")
         else:
-            pokemon_list = "\n".join(pokemons)
-            await interaction.response.send_message(f"Tu inventario de Pokémon:\n{pokemon_list}")
+            embed = discord.Embed(title="🐾 Tu inventario de Pokémon", color=discord.Color.red())
+            
+            # Agrupar Pokémon por nombre y contar
+            pokemon_counts = {}
+            for pokemon in pokemons:
+                pokemon_counts[pokemon] = pokemon_counts.get(pokemon, 0) + 1
+            
+            # Añadir Pokémon al embed
+            for pokemon, count in pokemon_counts.items():
+                embed.add_field(name=pokemon, value=f"Cantidad: {count}", inline=True)
+            
+            embed.set_footer(text=f"Total de Pokémon: {len(pokemons)}")
+            embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.avatar.url if interaction.user.avatar else None)
+            
+            await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="pokemon", description="Muestra un Pokémon aleatorio")
     async def mostrar_pokemon(self, interaction: discord.Interaction):
