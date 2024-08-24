@@ -6,6 +6,8 @@
 ![Gemini AI](https://img.shields.io/badge/Gemini-AI-4285F4?style=for-the-badge&logo=google&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 
+[![Únete a nuestro servidor](https://img.shields.io/badge/¡Únete%20a%20nuestro%20servidor!-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/2xjXpztFnY)
+
 </div>
 
 ---
