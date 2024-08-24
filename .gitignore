@@ -56,3 +56,6 @@ htmlcov/
 .coverage.*
 coverage.xml
 *.cover
+
+# Hosting
+discloud.config

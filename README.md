@@ -126,6 +126,17 @@ Para cambios importantes, por favor abre primero un issue para discutirlos.
 
 ---
 
+## 📜 Términos de Servicio y Política de Privacidad
+
+Para garantizar la transparencia y el cumplimiento de las regulaciones, hemos establecido los siguientes documentos:
+
+- [Términos de Servicio](https://itsjhonalex.github.io/TatianaBot/terms-of-service)
+- [Política de Privacidad](https://itsjhonalex.github.io/TatianaBot/privacy-policy)
+
+Por favor, lee estos documentos cuidadosamente antes de usar el bot.
+
+---
+
 ## 📄 Licencia
 
 Este proyecto está bajo la [Licencia MIT](https://opensource.org/licenses/MIT). Consulta el archivo `LICENSE` para más detalles.
@@ -137,4 +148,3 @@ Este proyecto está bajo la [Licencia MIT](https://opensource.org/licenses/MIT).
   <br>
   Desarrollado con pasión por ItsJhonAlex
 </div>
-
