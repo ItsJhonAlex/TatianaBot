@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Última actualización](https://img.shields.io/badge/Última%20actualización-24%20de%20agosto%202024-brightgreen?style=for-the-badge)
+**Última actualización: 24 de agosto de 2024**
 
 </div>
 
@@ -50,7 +50,7 @@ Podemos actualizar estos términos ocasionalmente. Te notificaremos sobre cambio
 
 ## 📞 10. Contacto
 
-Si tienes preguntas sobre estos Términos de Servicio, contáctanos en el [correo](isenkidu@gmail.com.).
+Si tienes preguntas sobre estos Términos de Servicio, contáctanos en isenkidu@gmail.com.
 
 ---
 

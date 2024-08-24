@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Última actualización](https://img.shields.io/badge/Última%20actualización-24%20de%20agosto%202024-brightgreen?style=for-the-badge)
+**Última actualización: 24 de agosto de 2024**
 
 </div>
 
@@ -67,7 +67,7 @@ Al utilizar el Bot, consientes el procesamiento de tu información como se descr
 
 ## 📞 10. Contacto
 
-Si tienes preguntas sobre esta Política de Privacidad, contáctanos en el [correo](isenkidu@gmail.com.).
+Si tienes preguntas sobre esta Política de Privacidad, contáctanos en isenkidu@gmail.com.
 
 ---
 
