@@ -2,11 +2,13 @@
 
 <div align="center">
 
+<img src="avatar.jpg" alt="Tatiana Bot Avatar" width="200" height="200" style="border-radius: 50%; box-shadow: 0 0 20px rgba(0, 123, 255, 0.5);">
+
 ![Discord Bot](https://img.shields.io/badge/Discord-Bot-7289DA?style=for-the-badge&logo=discord&logoColor=white)
 ![Gemini AI](https://img.shields.io/badge/Gemini-AI-4285F4?style=for-the-badge&logo=google&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 
-[![Únete a nuestra Familia](https://img.shields.io/badge/¡Únete%20a%20nuestra%20Familia!-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/2xjXpztFnY)
+[![Únete a nuestra familia](https://img.shields.io/badge/¡Únete%20a%20nuestra%20familia!-FF69B4?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/2xjXpztFnY)
 
 </div>
 
