@@ -6,7 +6,7 @@ load_dotenv()
 
 class Settings:
     # Versión
-    VERSION = "0.0.1"
+    VERSION = "1.0.0"
     CHANGELOG = "Implementar variables de entorno y mejorar la seguridad"
 
     # Variables secretas
@@ -24,3 +24,9 @@ class Settings:
     CREATOR_NAME = 'Enkidu'
     SERVER_NAME = ''
     SERVER_DESC = ''
+
+    # ID del usuario autorizado para comandos de energía
+    AUTHORIZED_USER_ID = int(os.getenv('AUTHORIZED_USER_ID'))
+
+    # ID del canal para mostrar el estado del bot
+    STATUS_CHANNEL_ID = int(os.getenv('STATUS_CHANNEL_ID'))

@@ -16,7 +16,7 @@
 
 ## 📌 Descripción
 
-Este bot de Discord utiliza la API de Gemini AI para generar respuestas inteligentes y ofrece una estructura modular para fácil expansión. Ideal para comunidades que buscan una experiencia de chat mejorada con IA.
+Tatiana es un bot de Discord avanzado que utiliza la API de Gemini AI para generar respuestas inteligentes. Con una estructura modular y fácil de expandir, Tatiana ofrece una experiencia de chat mejorada con IA, ideal para comunidades que buscan interacciones más dinámicas y personalizadas.
 
 ---
 
@@ -25,10 +25,11 @@ Este bot de Discord utiliza la API de Gemini AI para generar respuestas intelige
 - 🔗 Integración perfecta con Discord usando `discord.py`
 - 🧠 Generación de respuestas inteligentes con Gemini AI
 - 🧩 Arquitectura modular con sistema de plugins automáticos
-- 📚 Sistema de ayuda interactivo con menú de categorías
+- 📚 Sistema de ayuda interactivo con menú de categorías y paginación
 - ⚙️ Configuración centralizada y fácil de personalizar
 - 🛠️ Robusto manejo de errores y sistema de logging
 - 🔢 Soporte para comandos con prefijo y comandos de barra (/)
+- 📊 Panel de estado del bot actualizado y visualmente atractivo
 
 ---
 
@@ -70,7 +71,7 @@ Este bot de Discord utiliza la API de Gemini AI para generar respuestas intelige
 
 ## 🎮 Funcionalidades del bot
 
-El bot ofrece una variedad de funcionalidades organizadas en diferentes categorías:
+Tatiana ofrece una amplia gama de funcionalidades organizadas en diferentes categorías:
 
 - 🎭 Interacciones Anime: Comandos para realizar acciones como abrazar, besar, etc.
 - 💰 Economía: Sistema de monedas virtuales, balance, recompensas diarias y transferencias.
@@ -79,9 +80,10 @@ El bot ofrece una variedad de funcionalidades organizadas en diferentes categor�
 - 🐾 Pokémon: Captura de Pokémon aleatorios y gestión de inventario.
 - 📊 Encuestas: Creación de encuestas rápidas con múltiples opciones.
 - 🎱 Bola 8 Mágica: Respuestas aleatorias a preguntas de sí o no.
-- 🏓 Ping: Verificación de la latencia del bot.
+- 🏓 Ping: Verificación de la latencia del bot con un embed mejorado.
+- 📈 Estado: Panel de estado del bot actualizado y visualmente atractivo.
 
-Para ver todos los comandos disponibles, usa `/ayuda` en Discord.
+Para ver todos los comandos disponibles, usa `/ayuda` en Discord. 
 
 ---
 

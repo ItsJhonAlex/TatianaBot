@@ -7,6 +7,7 @@ from src.core.system import handle_power_control
 from src.plugins import load_plugins
 import os
 import aiohttp
+from src.utils.logger import Logger
 
 class DiscordBot(commands.Bot):
     def __init__(self, intents):
@@ -14,12 +15,13 @@ class DiscordBot(commands.Bot):
         self.convo = GeminiInterface.create_conversation()
 
     async def setup_hook(self):
+        Logger.info("Iniciando carga de plugins...")
         await load_plugins(self)
         await self.tree.sync()
-        print("Comandos de prefijo y de barra cargados.")
+        Logger.success("Comandos de prefijo y de barra cargados.")
 
     async def on_ready(self):
-        print(f'Nos hemos conectado como {self.user}')
+        Logger.info(f'Nos hemos conectado como {self.user}')
         
         # Configurar el avatar del bot
         avatar_path = os.path.join('src', 'assets', 'avatar.jpg')
@@ -27,13 +29,13 @@ class DiscordBot(commands.Bot):
             with open(avatar_path, 'rb') as avatar_file:
                 avatar_data = avatar_file.read()
             await self.user.edit(avatar=avatar_data)
-            print("Avatar del bot actualizado con éxito.")
+            Logger.success("Avatar del bot actualizado con éxito.")
         except FileNotFoundError:
-            print(f"No se encontró el archivo de avatar en {avatar_path}")
+            Logger.warning(f"No se encontró el archivo de avatar en {avatar_path}")
         except discord.errors.HTTPException as e:
-            print(f"Error al actualizar el avatar: {e}")
+            Logger.error(f"Error al actualizar el avatar: {e}")
         except Exception as e:
-            print(f"Ocurrió un error inesperado al actualizar el avatar: {e}")
+            Logger.error(f"Ocurrió un error inesperado al actualizar el avatar: {e}")
 
         await self.change_presence(activity=discord.Game(name="Siendo Tatiana"))
         try:
@@ -48,11 +50,11 @@ class DiscordBot(commands.Bot):
                     for chunk in chunks:
                         await channel.send(chunk)
                 else:
-                    print("No se pudo generar el mensaje de inicio debido a un error de IA.")
+                    Logger.error("No se pudo generar el mensaje de inicio debido a un error de IA.")
             else:
-                print(f"Canal con ID {Settings.CHANNEL_ID} no encontrado.")
+                Logger.warning(f"Canal con ID {Settings.CHANNEL_ID} no encontrado.")
         except Exception as e:
-            print(f"Ocurrió un error al iniciar: {e}")
+            Logger.error(f"Ocurrió un error al iniciar: {e}")
 
     async def on_message(self, message):
         if message.author == self.user:
@@ -62,7 +64,7 @@ class DiscordBot(commands.Bot):
             if not message.content.startswith("//"):
                 try:
                     formatted_message = f"{message.author.name}: {message.content}"
-                    print(formatted_message)
+                    Logger.debug(formatted_message)
 
                     if Settings.SHOW_TYPING:
                         async with message.channel.typing():
@@ -77,7 +79,7 @@ class DiscordBot(commands.Bot):
                                             raise ValueError("El fragmento excede los 2000 caracteres.")
                                         await message.reply(chunk)
                                 else:
-                                    print("No se pudo generar una respuesta debido a un error de IA.")
+                                    Logger.error("No se pudo generar una respuesta debido a un error de IA.")
                     else:
                         if message.content:
                             response = GeminiInterface.generate_text(self.convo, formatted_message)
@@ -90,9 +92,9 @@ class DiscordBot(commands.Bot):
                                         raise ValueError("El fragmento excede los 2000 caracteres.")
                                     await message.reply(chunk)
                             else:
-                                print("No se pudo generar una respuesta debido a un error de IA.")
+                                Logger.error("No se pudo generar una respuesta debido a un error de IA.")
                 except Exception as e:
-                    print(f"Ocurrió un error al procesar el mensaje: {e}")
+                    Logger.error(f"Ocurrió un error al procesar el mensaje: {e}")
         
         await self.process_commands(message)
 
