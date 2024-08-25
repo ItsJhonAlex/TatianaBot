@@ -124,20 +124,14 @@ Este plugin se integrará automáticamente con el sistema de menú de ayuda, apa
 
 - **Configuración global**: Modifica `src/config/settings.py`
   ```python:src/config/settings.py
-  startLine: 1
-  endLine: 29
   ```
 
 - **Integración con IA**: Ajusta `src/chat/gemini_interface.py`
   ```python:src/chat/gemini_interface.py
-  startLine: 6
-  endLine: 65
   ```
 
 - **Sistema de ayuda**: Personaliza `src/plugins/help.py`
   ```python:src/plugins/help.py
-  startLine: 1
-  endLine: 124
   ```
 
 ### 📝 Comandos con Prefijo
