@@ -260,10 +260,57 @@ class AnimeInteractionsPlugin(commands.Cog):
         gif_url, anime_name = await self.get_gif(interaction_type)
         if gif_url:
             embed = discord.Embed(color=discord.Color.random())
+            
+            # Diccionario de descripciones en español para cada tipo de interacción
+            descripciones = {
+                "hug": "abrazó a",
+                "kiss": "besó a",
+                "pat": "dio una palmadita a",
+                "punch": "golpeó a",
+                "shoot": "disparó a",
+                "poke": "picó a",
+                "peck": "besó la mejilla de",
+                "tickle": "hizo cosquillas a",
+                "yeet": "lanzó a",
+                "highfive": "chocó los cinco con",
+                "feed": "alimentó a",
+                "bite": "mordió a",
+                "cuddle": "acarició a",
+                "kick": "pateó a",
+                "baka": "insultó a",
+                "handshake": "dio la mano a",
+                "slap": "abofeteó a",
+                "handhold": "tomó de la mano a",
+                # Interacciones sin usuario objetivo
+                "lurk": "está acechando",
+                "sleep": "está durmiendo",
+                "shrug": "se encogió de hombros",
+                "stare": "está mirando fijamente",
+                "wave": "está saludando",
+                "smile": "está sonriendo",
+                "wink": "guiñó un ojo",
+                "blush": "se sonrojó",
+                "smug": "está presumiendo",
+                "think": "está pensando",
+                "bored": "está aburrido",
+                "nom": "está comiendo",
+                "yawn": "está bostezando",
+                "facepalm": "se agobia",
+                "happy": "está feliz",
+                "nod": "asintió",
+                "nope": "negó con la cabeza",
+                "dance": "está bailando",
+                "cry": "está llorando",
+                "pout": "está haciendo pucheros",
+                "thumbsup": "dio un pulgar arriba",
+                "laugh": "está riendo"
+            }
+            
             if usuario:
-                embed.description = f"{interaction.user.mention} {interaction_type} a {usuario.mention}"
+                embed.description = f"{interaction.user.mention} {descripciones[interaction_type]} {usuario.mention}"
             else:
-                embed.description = f"{interaction.user.mention} {interaction_type}"
+                embed.description = f"{interaction.user.mention} {descripciones[interaction_type]}"
+            
             embed.set_image(url=gif_url)
             embed.set_footer(text=f"Anime: {anime_name}")
             await interaction.followup.send(embed=embed)

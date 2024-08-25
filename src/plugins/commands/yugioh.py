@@ -5,6 +5,7 @@ import random
 import os
 import json
 import asyncio
+import time
 from discord.ui import View, Button
 
 class YugiohCommands(commands.Cog):
@@ -14,6 +15,8 @@ class YugiohCommands(commands.Cog):
         self.currency_name = "monedas"
         self.data_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'data')
         self.data_file = os.path.join(self.data_dir, 'user_data.json')
+        self.attempts_reset_time = 3600  # 1 hora en segundos
+        self.max_attempts = 10
 
     def load_data(self):
         if os.path.exists(self.data_file):
@@ -31,6 +34,8 @@ class YugiohCommands(commands.Cog):
                 data[user_id]["pokemons"] = []
             if "yugioh_cards" not in data[user_id]:
                 data[user_id]["yugioh_cards"] = []
+            if "yugioh_attempts" not in data[user_id]:
+                data[user_id]["yugioh_attempts"] = {"attempts": self.max_attempts, "last_reset": time.time()}
         
         return data
 
@@ -42,7 +47,7 @@ class YugiohCommands(commands.Cog):
         data = self.load_data()
         user_id = str(user_id)
         if user_id not in data:
-            data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": []}
+            data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": [], "yugioh_attempts": {"attempts": self.max_attempts, "last_reset": time.time()}}
         data[user_id]["balance"] += amount
         self.save_data(data)
 
@@ -50,11 +55,39 @@ class YugiohCommands(commands.Cog):
         data = self.load_data()
         user_id = str(user_id)
         if user_id not in data:
-            data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": []}
+            data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": [], "yugioh_attempts": {"attempts": self.max_attempts, "last_reset": time.time()}}
         if "yugioh_cards" not in data[user_id]:
             data[user_id]["yugioh_cards"] = []
         data[user_id]["yugioh_cards"].append(card)
         self.save_data(data)
+
+    def update_attempts(self, user_id):
+        data = self.load_data()
+        user_id = str(user_id)
+        current_time = time.time()
+        
+        if user_id not in data:
+            data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": [], "yugioh_attempts": {"attempts": self.max_attempts, "last_reset": current_time}}
+        
+        if current_time - data[user_id]["yugioh_attempts"]["last_reset"] >= self.attempts_reset_time:
+            data[user_id]["yugioh_attempts"]["attempts"] = self.max_attempts
+            data[user_id]["yugioh_attempts"]["last_reset"] = current_time
+        
+        if data[user_id]["yugioh_attempts"]["attempts"] > 0:
+            data[user_id]["yugioh_attempts"]["attempts"] -= 1
+            self.save_data(data)
+            return True
+        return False
+
+    def get_remaining_attempts(self, user_id):
+        data = self.load_data()
+        user_id = str(user_id)
+        if user_id in data and "yugioh_attempts" in data[user_id]:
+            current_time = time.time()
+            if current_time - data[user_id]["yugioh_attempts"]["last_reset"] >= self.attempts_reset_time:
+                return self.max_attempts
+            return data[user_id]["yugioh_attempts"]["attempts"]
+        return self.max_attempts
 
     @commands.command(name="cartas", description="Muestra tu inventario de cartas de Yu-Gi-Oh!")
     async def cartas(self, ctx):
@@ -79,6 +112,11 @@ class YugiohCommands(commands.Cog):
 
     @commands.command(name="yugioh", description="Muestra una carta aleatoria de Yu-Gi-Oh!")
     async def yugioh(self, ctx):
+        if not self.update_attempts(ctx.author.id):
+            remaining_time = self.attempts_reset_time - (time.time() - self.load_data()[str(ctx.author.id)]["yugioh_attempts"]["last_reset"])
+            await ctx.send(f"Has agotado tus intentos. Espera {int(remaining_time / 60)} minutos para obtener más intentos.")
+            return
+
         async with ctx.typing():
             async with aiohttp.ClientSession() as session:
                 async with session.get(self.yugioh_api_url) as response:
@@ -90,10 +128,9 @@ class YugiohCommands(commands.Cog):
                             return
                         
                         card = data['data'][0]
-                        
                         card_name = card.get('name', 'Nombre desconocido')
-                        card_rarity = random.choice(["común", "rara", "muy rara"])
-                        catch_rate = {"común": 0.8, "rara": 0.5, "muy rara": 0.2}[card_rarity]
+                        card_price = float(card.get('card_prices', [{}])[0].get('cardmarket_price', 0))
+                        catch_rate = max(0.1, min(0.9, 1 - (card_price / 100)))  # Ajusta según sea necesario
                         
                         embed = discord.Embed(title=f"¡Apareció {card_name}!", description=card.get('desc', 'No hay descripción disponible'), color=discord.Color.gold())
                         
@@ -101,7 +138,7 @@ class YugiohCommands(commands.Cog):
                             embed.set_image(url=card['card_images'][0]['image_url'])
                         
                         embed.add_field(name="Tipo", value=card.get('type', 'Desconocido'), inline=True)
-                        embed.add_field(name="Rareza", value=card_rarity.capitalize(), inline=True)
+                        embed.add_field(name="Precio", value=f"${card_price:.2f}", inline=True)
                         if 'atk' in card:
                             embed.add_field(name="ATK", value=card['atk'], inline=True)
                         if 'def' in card:
@@ -110,6 +147,9 @@ class YugiohCommands(commands.Cog):
                             embed.add_field(name="Raza/Tipo", value=card['race'], inline=True)
                         if 'archetype' in card:
                             embed.add_field(name="Arquetipo", value=card['archetype'], inline=True)
+                        
+                        remaining_attempts = self.get_remaining_attempts(ctx.author.id)
+                        embed.set_footer(text=f"Solicitado por {ctx.author.name} | Intentos restantes: {remaining_attempts}", icon_url=ctx.author.avatar.url if ctx.author.avatar else None)
                         
                         view = View()
                         button = Button(label="Obtener Carta", style=discord.ButtonStyle.primary)
