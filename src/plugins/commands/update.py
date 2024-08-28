@@ -57,7 +57,11 @@ async def update(ctx):
                     color=discord.Color.blue()
                 )
                 
-                embed.add_field(name="Cambios", value=latest_commit['commit']['message'], inline=False)
+                commit_message = latest_commit['commit']['message']
+                if len(commit_message) > 1000:
+                    commit_message = commit_message[:997] + "..."
+                embed.add_field(name="Cambios", value=commit_message, inline=False)
+                
                 embed.add_field(name="Desarrollador", value=latest_commit['author']['login'], inline=True)
                 embed.add_field(name="Fecha", value=latest_commit['commit']['author']['date'], inline=True)
                 embed.set_footer(text=f"Versión: {Settings.VERSION} • Creado por {Settings.CREATOR_NAME}")
