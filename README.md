@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="src/assets/avatar.jpg" alt="Tatiana Bot Avatar" width="200" height="200" style="border-radius: 50%; box-shadow: 0 0 20px rgba(0, 123, 255, 0.5);">
+<img src="src/assets/banner.png" alt="Tatiana Bot Banner" width="100%" height="100%" style="border-radius: 50%; box-shadow: 0 0 20px rgba(0, 123, 255, 0.5);">
 
 ![Discord Bot](https://img.shields.io/badge/Discord-Bot-7289DA?style=for-the-badge&logo=discord&logoColor=white)
 ![Gemini AI](https://img.shields.io/badge/Gemini-AI-4285F4?style=for-the-badge&logo=google&logoColor=white)

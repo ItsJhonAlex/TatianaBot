@@ -6,7 +6,6 @@ from src.chat.gemini_interface import GeminiInterface
 from src.core.system import handle_power_control
 from src.plugins import load_plugins
 import os
-import aiohttp
 from src.utils.logger import Logger
 
 class DiscordBot(commands.Bot):
@@ -24,18 +23,24 @@ class DiscordBot(commands.Bot):
         Logger.info(f'Nos hemos conectado como {self.user}')
         
         # Configurar el avatar del bot
-        avatar_path = os.path.join('src', 'assets', 'avatar.jpg')
+        avatar_path = os.path.join('src', 'assets', 'avatar.png')
+        banner_path = os.path.join('src', 'assets', 'banner.png')
         try:
             with open(avatar_path, 'rb') as avatar_file:
                 avatar_data = avatar_file.read()
+            with open(banner_path, 'rb') as banner_file:
+                banner_data = banner_file.read()
+            
             await self.user.edit(avatar=avatar_data)
-            Logger.success("Avatar del bot actualizado con éxito.")
-        except FileNotFoundError:
-            Logger.warning(f"No se encontró el archivo de avatar en {avatar_path}")
+            await self.user.edit(banner=banner_data)
+            
+            Logger.success("Avatar y banner del bot actualizados con éxito.")
+        except FileNotFoundError as e:
+            Logger.warning(f"No se encontró el archivo: {e.filename}")
         except discord.errors.HTTPException as e:
-            Logger.error(f"Error al actualizar el avatar: {e}")
+            Logger.error(f"Error al actualizar el avatar o banner: {e}")
         except Exception as e:
-            Logger.error(f"Ocurrió un error inesperado al actualizar el avatar: {e}")
+            Logger.error(f"Ocurrió un error inesperado al actualizar el avatar o banner: {e}")
 
         await self.change_presence(activity=discord.Game(name="Siendo Tatiana"))
         try:

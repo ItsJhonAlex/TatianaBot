@@ -5,6 +5,7 @@ import aiohttp
 import random
 import os
 import json
+import time
 
 class PokemonPlugin(commands.Cog):
     """
@@ -19,12 +20,26 @@ class PokemonPlugin(commands.Cog):
         self.currency_name = "monedas"
         self.data_dir = os.path.join(os.path.dirname(__file__), '..', 'data')
         self.data_file = os.path.join(self.data_dir, 'user_data.json')
+        self.attempts_reset_time = 3600  # 1 hora en segundos
+        self.max_attempts = 10
 
     def load_data(self):
         if os.path.exists(self.data_file):
             with open(self.data_file, 'r') as f:
-                return json.load(f)
-        return {}
+                data = json.load(f)
+        else:
+            data = {}
+        
+        for user_id in data:
+            if not isinstance(data[user_id], dict):
+                data[user_id] = {}
+            if "balance" not in data[user_id]:
+                data[user_id]["balance"] = 0
+            if "pokemons" not in data[user_id]:
+                data[user_id]["pokemons"] = []
+            if "pokemon_attempts" not in data[user_id]:
+                data[user_id]["pokemon_attempts"] = {"attempts": self.max_attempts, "last_reset": time.time()}
+        return data
 
     def save_data(self, data):
         with open(self.data_file, 'w') as f:
@@ -45,6 +60,34 @@ class PokemonPlugin(commands.Cog):
             data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": []}
         data[user_id]["pokemons"].append(pokemon)
         self.save_data(data)
+
+    def update_attempts(self, user_id):
+        data = self.load_data()
+        user_id = str(user_id)
+        current_time = time.time()
+        
+        if user_id not in data:
+            data[user_id] = {"balance": 0, "pokemons": [], "pokemon_attempts": {"attempts": self.max_attempts, "last_reset": current_time}}
+        
+        if current_time - data[user_id]["pokemon_attempts"]["last_reset"] >= self.attempts_reset_time:
+            data[user_id]["pokemon_attempts"]["attempts"] = self.max_attempts
+            data[user_id]["pokemon_attempts"]["last_reset"] = current_time
+        
+        if data[user_id]["pokemon_attempts"]["attempts"] > 0:
+            data[user_id]["pokemon_attempts"]["attempts"] -= 1
+            self.save_data(data)
+            return True
+        return False
+
+    def get_remaining_attempts(self, user_id):
+        data = self.load_data()
+        user_id = str(user_id)
+        if user_id in data and "pokemon_attempts" in data[user_id]:
+            current_time = time.time()
+            if current_time - data[user_id]["pokemon_attempts"]["last_reset"] >= self.attempts_reset_time:
+                return self.max_attempts
+            return data[user_id]["pokemon_attempts"]["attempts"]
+        return self.max_attempts
 
     def get_commands(self):
         return [command for command in self.bot.tree.walk_commands() if command.binding == self]
@@ -74,6 +117,11 @@ class PokemonPlugin(commands.Cog):
 
     @app_commands.command(name="pokemon", description="Muestra un Pokémon aleatorio")
     async def mostrar_pokemon(self, interaction: discord.Interaction):
+        if not self.update_attempts(interaction.user.id):
+            remaining_time = self.attempts_reset_time - (time.time() - self.load_data()[str(interaction.user.id)]["pokemon_attempts"]["last_reset"])
+            await interaction.response.send_message(f"Has agotado tus intentos. Espera {int(remaining_time / 60)} minutos para obtener más intentos.", ephemeral=True)
+            return
+
         await interaction.response.defer()  
 
         async with aiohttp.ClientSession() as session:
@@ -88,10 +136,11 @@ class PokemonPlugin(commands.Cog):
                     pokemon_rarity = random.choice(["común", "raro", "muy raro"])
                     catch_rate = {"común": 0.8, "raro": 0.5, "muy raro": 0.2}[pokemon_rarity]
                     
+                    remaining_attempts = self.get_remaining_attempts(interaction.user.id)
                     embed = discord.Embed(title=f"¡Apareció un {pokemon_name}!", description=pokemon_description, color=discord.Color.green())
                     embed.set_image(url=pokemon_image)
                     embed.add_field(name="Rareza", value=pokemon_rarity.capitalize())
-                    embed.set_footer(text=f"Solicitado por {interaction.user.name}", icon_url=interaction.user.avatar.url if interaction.user.avatar else None)
+                    embed.set_footer(text=f"Solicitado por {interaction.user.name} | Intentos restantes: {remaining_attempts}", icon_url=interaction.user.avatar.url if interaction.user.avatar else None)
                     
                     await interaction.followup.send(embed=embed, view=PokemonCatchView(self, pokemon_name, catch_rate))
                 else:

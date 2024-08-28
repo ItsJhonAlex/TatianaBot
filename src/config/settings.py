@@ -30,3 +30,8 @@ class Settings:
 
     # ID del canal para mostrar el estado del bot
     STATUS_CHANNEL_ID = int(os.getenv('STATUS_CHANNEL_ID'))
+    
+    # Configuración de GitHub
+    GITHUB_UPDATES_CHANNEL_ID = int(os.getenv('GITHUB_UPDATES_CHANNEL_ID'))
+    GITHUB_ACCESS_TOKEN = os.getenv('GITHUB_ACCESS_TOKEN')
+    GITHUB_REPO = os.getenv('GITHUB_REPO')

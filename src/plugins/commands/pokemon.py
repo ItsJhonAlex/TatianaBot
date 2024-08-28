@@ -6,6 +6,7 @@ import random
 import os
 import json
 import asyncio
+import time
 
 class PokemonCommands(commands.Cog):
     def __init__(self, bot):
@@ -14,12 +15,26 @@ class PokemonCommands(commands.Cog):
         self.currency_name = "monedas"
         self.data_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'data')
         self.data_file = os.path.join(self.data_dir, 'user_data.json')
+        self.attempts_reset_time = 3600  # 1 hora en segundos
+        self.max_attempts = 10
 
     def load_data(self):
         if os.path.exists(self.data_file):
             with open(self.data_file, 'r') as f:
-                return json.load(f)
-        return {}
+                data = json.load(f)
+        else:
+            data = {}
+        
+        for user_id in data:
+            if not isinstance(data[user_id], dict):
+                data[user_id] = {}
+            if "balance" not in data[user_id]:
+                data[user_id]["balance"] = 0
+            if "pokemons" not in data[user_id]:
+                data[user_id]["pokemons"] = []
+            if "pokemon_attempts" not in data[user_id]:
+                data[user_id]["pokemon_attempts"] = {"attempts": self.max_attempts, "last_reset": time.time()}
+        return data
 
     def save_data(self, data):
         with open(self.data_file, 'w') as f:
@@ -62,8 +77,41 @@ class PokemonCommands(commands.Cog):
             
             await ctx.send(embed=embed)
 
+    def update_attempts(self, user_id):
+        data = self.load_data()
+        user_id = str(user_id)
+        current_time = time.time()
+        
+        if user_id not in data:
+            data[user_id] = {"balance": 0, "pokemons": [], "pokemon_attempts": {"attempts": self.max_attempts, "last_reset": current_time}}
+        
+        if current_time - data[user_id]["pokemon_attempts"]["last_reset"] >= self.attempts_reset_time:
+            data[user_id]["pokemon_attempts"]["attempts"] = self.max_attempts
+            data[user_id]["pokemon_attempts"]["last_reset"] = current_time
+        
+        if data[user_id]["pokemon_attempts"]["attempts"] > 0:
+            data[user_id]["pokemon_attempts"]["attempts"] -= 1
+            self.save_data(data)
+            return True
+        return False
+
+    def get_remaining_attempts(self, user_id):
+        data = self.load_data()
+        user_id = str(user_id)
+        if user_id in data and "pokemon_attempts" in data[user_id]:
+            current_time = time.time()
+            if current_time - data[user_id]["pokemon_attempts"]["last_reset"] >= self.attempts_reset_time:
+                return self.max_attempts
+            return data[user_id]["pokemon_attempts"]["attempts"]
+        return self.max_attempts
+
     @commands.command(name="pokemon", description="Muestra un Pokémon aleatorio")
     async def mostrar_pokemon(self, ctx):
+        if not self.update_attempts(ctx.author.id):
+            remaining_time = self.attempts_reset_time - (time.time() - self.load_data()[str(ctx.author.id)]["pokemon_attempts"]["last_reset"])
+            await ctx.send(f"Has agotado tus intentos. Espera {int(remaining_time / 60)} minutos para obtener más intentos.")
+            return
+
         async with ctx.typing():
             async with aiohttp.ClientSession() as session:
                 pokemon_id = random.randint(1, 151)
@@ -80,7 +128,8 @@ class PokemonCommands(commands.Cog):
                         embed = discord.Embed(title=f"¡Apareció un {pokemon_name}!", description=pokemon_description, color=discord.Color.green())
                         embed.set_image(url=pokemon_image)
                         embed.add_field(name="Rareza", value=pokemon_rarity.capitalize())
-                        embed.set_footer(text=f"Solicitado por {ctx.author.name}", icon_url=ctx.author.avatar.url if ctx.author.avatar else None)
+                        remaining_attempts = self.get_remaining_attempts(ctx.author.id)
+                        embed.set_footer(text=f"Solicitado por {ctx.author.name} | Intentos restantes: {remaining_attempts}", icon_url=ctx.author.avatar.url if ctx.author.avatar else None)
                         
                         view = View()
                         button = Button(label="Cazar Pokémon", style=discord.ButtonStyle.primary)
