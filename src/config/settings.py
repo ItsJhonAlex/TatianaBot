@@ -6,8 +6,8 @@ load_dotenv()
 
 class Settings:
     # Versión
-    VERSION = "1.0.0"
-    CHANGELOG = "Implementar variables de entorno y mejorar la seguridad"
+    VERSION = "1.2.0"
+    CHANGELOG = "Cambios en el almacenamiento de datos y mejoras de la base de datos"
 
     # Variables secretas
     DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
