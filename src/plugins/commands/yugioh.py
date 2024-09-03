@@ -1,111 +1,83 @@
 from discord.ext import commands
 import discord
+from discord import app_commands
 import aiohttp
 import random
-import os
-import json
-import asyncio
-import time
-from discord.ui import View, Button
+from datetime import datetime, timedelta
+from src.utils.database import session, User, YugiohCard, Attempt, get_user, update_balance, get_balance
 
 class YugiohCommands(commands.Cog):
+    """
+    Este plugin ofrece comandos relacionados con Yu-Gi-Oh!, incluyendo
+    la obtención de cartas aleatorias y la gestión del inventario de cartas.
+    """
+    name = "🃏 Yu-Gi-Oh!"
+    
     def __init__(self, bot):
         self.bot = bot
         self.yugioh_api_url = "https://db.ygoprodeck.com/api/v7/randomcard.php"
         self.currency_name = "monedas"
-        self.data_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'data')
-        self.data_file = os.path.join(self.data_dir, 'user_data.json')
         self.attempts_reset_time = 3600  # 1 hora en segundos
         self.max_attempts = 10
 
-    def load_data(self):
-        if os.path.exists(self.data_file):
-            with open(self.data_file, 'r') as f:
-                data = json.load(f)
-        else:
-            data = {}
+    def get_remaining_attempts(self, user_id):
+        user = get_user(user_id)
+        attempt = session.query(Attempt).filter_by(user_id=user.id, attempt_type='yugioh').first()
+        if not attempt:
+            attempt = Attempt(user_id=user.id, attempt_type='yugioh', attempts=self.max_attempts, last_reset=datetime.utcnow())
+            session.add(attempt)
+            session.commit()
         
-        for user_id in data:
-            if not isinstance(data[user_id], dict):
-                data[user_id] = {}
-            if "balance" not in data[user_id]:
-                data[user_id]["balance"] = 0
-            if "pokemons" not in data[user_id]:
-                data[user_id]["pokemons"] = []
-            if "yugioh_cards" not in data[user_id]:
-                data[user_id]["yugioh_cards"] = []
-            if "yugioh_attempts" not in data[user_id]:
-                data[user_id]["yugioh_attempts"] = {"attempts": self.max_attempts, "last_reset": time.time()}
+        current_time = datetime.utcnow()
+        if current_time - attempt.last_reset >= timedelta(seconds=self.attempts_reset_time):
+            attempt.attempts = self.max_attempts
+            attempt.last_reset = current_time
+            session.commit()
         
-        return data
-
-    def save_data(self, data):
-        with open(self.data_file, 'w') as f:
-            json.dump(data, f)
-
-    def update_balance(self, user_id, amount):
-        data = self.load_data()
-        user_id = str(user_id)
-        if user_id not in data:
-            data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": [], "yugioh_attempts": {"attempts": self.max_attempts, "last_reset": time.time()}}
-        data[user_id]["balance"] += amount
-        self.save_data(data)
-
-    def add_yugioh_card(self, user_id, card):
-        data = self.load_data()
-        user_id = str(user_id)
-        if user_id not in data:
-            data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": [], "yugioh_attempts": {"attempts": self.max_attempts, "last_reset": time.time()}}
-        if "yugioh_cards" not in data[user_id]:
-            data[user_id]["yugioh_cards"] = []
-        data[user_id]["yugioh_cards"].append(card)
-        self.save_data(data)
+        return attempt.attempts
 
     def update_attempts(self, user_id):
-        data = self.load_data()
-        user_id = str(user_id)
-        current_time = time.time()
+        user = get_user(user_id)
+        attempt = session.query(Attempt).filter_by(user_id=user.id, attempt_type='yugioh').first()
+        if not attempt:
+            attempt = Attempt(user_id=user.id, attempt_type='yugioh', attempts=self.max_attempts, last_reset=datetime.utcnow())
+            session.add(attempt)
         
-        if user_id not in data:
-            data[user_id] = {"balance": 0, "pokemons": [], "yugioh_cards": [], "yugioh_attempts": {"attempts": self.max_attempts, "last_reset": current_time}}
+        current_time = datetime.utcnow()
+        if current_time - attempt.last_reset >= timedelta(seconds=self.attempts_reset_time):
+            attempt.attempts = self.max_attempts
+            attempt.last_reset = current_time
         
-        if current_time - data[user_id]["yugioh_attempts"]["last_reset"] >= self.attempts_reset_time:
-            data[user_id]["yugioh_attempts"]["attempts"] = self.max_attempts
-            data[user_id]["yugioh_attempts"]["last_reset"] = current_time
-        
-        if data[user_id]["yugioh_attempts"]["attempts"] > 0:
-            data[user_id]["yugioh_attempts"]["attempts"] -= 1
-            self.save_data(data)
+        if attempt.attempts > 0:
+            attempt.attempts -= 1
+            session.commit()
             return True
         return False
 
-    def get_remaining_attempts(self, user_id):
-        data = self.load_data()
-        user_id = str(user_id)
-        if user_id in data and "yugioh_attempts" in data[user_id]:
-            current_time = time.time()
-            if current_time - data[user_id]["yugioh_attempts"]["last_reset"] >= self.attempts_reset_time:
-                return self.max_attempts
-            return data[user_id]["yugioh_attempts"]["attempts"]
-        return self.max_attempts
+    def add_yugioh_card(self, user_id, card_name, card_id):
+        user = get_user(user_id)
+        new_card = YugiohCard(user_id=user.id, card_name=card_name, card_id=card_id)
+        session.add(new_card)
+        session.commit()
 
-    @commands.command(name="cartas", description="Muestra tu inventario de cartas de Yu-Gi-Oh!")
-    async def cartas(self, ctx):
-        data = self.load_data()
-        cards = data.get(str(ctx.author.id), {}).get("yugioh_cards", [])
+    @commands.command(name="deck", description="Muestra tu deck de cartas de Yu-Gi-Oh!")
+    async def deck(self, ctx):
+        user = get_user(ctx.author.id)
+        cards = session.query(YugiohCard).filter_by(user_id=user.id).all()
+        
         if not cards:
-            await ctx.send("No tienes ninguna carta de Yu-Gi-Oh! en tu inventario.")
+            await ctx.send("No tienes ninguna carta de Yu-Gi-Oh! en tu deck.")
         else:
-            embed = discord.Embed(title="🃏 Tu inventario de cartas de Yu-Gi-Oh!", color=discord.Color.gold())
+            embed = discord.Embed(title="🃏 Tu deck de Yu-Gi-Oh!", color=discord.Color.blue())
             
             card_counts = {}
             for card in cards:
-                card_counts[card] = card_counts.get(card, 0) + 1
+                card_counts[card.card_name] = card_counts.get(card.card_name, 0) + 1
             
-            for card, count in card_counts.items():
-                embed.add_field(name=card, value=f"Cantidad: {count}", inline=False)
+            for card_name, count in card_counts.items():
+                embed.add_field(name=card_name, value=f"Cantidad: {count}", inline=True)
             
-            embed.set_footer(text=f"Total de cartas: {len(cards)}")
+            embed.set_footer(text=f"Total de cartas en el deck: {len(cards)}")
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url if ctx.author.avatar else None)
             
             await ctx.send(embed=embed)
@@ -113,7 +85,8 @@ class YugiohCommands(commands.Cog):
     @commands.command(name="yugioh", description="Muestra una carta aleatoria de Yu-Gi-Oh!")
     async def yugioh(self, ctx):
         if not self.update_attempts(ctx.author.id):
-            remaining_time = self.attempts_reset_time - (time.time() - self.load_data()[str(ctx.author.id)]["yugioh_attempts"]["last_reset"])
+            attempt = session.query(Attempt).filter_by(user_id=get_user(ctx.author.id).id, attempt_type='yugioh').first()
+            remaining_time = self.attempts_reset_time - (datetime.utcnow() - attempt.last_reset).total_seconds()
             await ctx.send(f"Has agotado tus intentos. Espera {int(remaining_time / 60)} minutos para obtener más intentos.")
             return
 
@@ -122,73 +95,92 @@ class YugiohCommands(commands.Cog):
                 async with session.get(self.yugioh_api_url) as response:
                     if response.status == 200:
                         data = await response.json()
-                        
                         if 'data' not in data or not data['data']:
                             await ctx.send("La API no devolvió datos de carta. Intenta de nuevo más tarde.")
                             return
                         
                         card = data['data'][0]
                         card_name = card.get('name', 'Nombre desconocido')
+                        card_id = card.get('id', 'ID desconocido')
                         card_price = float(card.get('card_prices', [{}])[0].get('cardmarket_price', 0))
                         catch_rate = max(0.1, min(0.9, 1 - (card_price / 100)))  # Ajusta según sea necesario
                         
-                        embed = discord.Embed(title=f"¡Apareció {card_name}!", description=card.get('desc', 'No hay descripción disponible'), color=discord.Color.gold())
+                        rarity_mapping = {
+                            (0, 1): ("⚪ Común", 0xCCCCCC),
+                            (1, 5): ("🔵 Rara", 0x3498db),
+                            (5, 20): ("🟣 Súper Rara", 0x9b59b6),
+                            (20, float('inf')): ("🟡 Ultra Rara", 0xf1c40f)
+                        }
+                        
+                        rarity, color = next((v for k, v in rarity_mapping.items() if k[0] <= card_price < k[1]), ("⚫ Desconocida", 0x95a5a6))
+                        
+                        embed = discord.Embed(title=f"¡Apareció {card_name}!", color=color)
                         
                         if 'card_images' in card and card['card_images']:
                             embed.set_image(url=card['card_images'][0]['image_url'])
                         
-                        embed.add_field(name="Tipo", value=card.get('type', 'Desconocido'), inline=True)
-                        embed.add_field(name="Precio", value=f"${card_price:.2f}", inline=True)
-                        if 'atk' in card:
-                            embed.add_field(name="ATK", value=card['atk'], inline=True)
-                        if 'def' in card:
-                            embed.add_field(name="DEF", value=card['def'], inline=True)
-                        if 'race' in card:
-                            embed.add_field(name="Raza/Tipo", value=card['race'], inline=True)
+                        description = f"**Tipo**: `{card.get('type', 'Desconocido')}`\n"
+                        description += f"**Raza/Tipo**: `{card.get('race', 'Desconocido')}`\n"
                         if 'archetype' in card:
-                            embed.add_field(name="Arquetipo", value=card['archetype'], inline=True)
+                            description += f"**Arquetipo**: `{card['archetype']}`\n"
+                        description += f"\n**Descripción**: {card.get('desc', 'No hay descripción disponible')}"
+                        
+                        embed.description = description
+                        
+                        stats = []
+                        if 'atk' in card:
+                            stats.append(f"⚔️ ATK: **{card['atk']}**")
+                        if 'def' in card:
+                            stats.append(f"🛡️ DEF: **{card['def']}**")
+                        if 'level' in card:
+                            stats.append(f"⭐ Nivel: **{card['level']}**")
+                        if stats:
+                            embed.add_field(name="Estadísticas", value=" | ".join(stats), inline=False)
+                        
+                        embed.add_field(name="💰 Precio", value=f"${card_price:.2f}", inline=True)
+                        embed.add_field(name="📊 Rareza", value=rarity, inline=True)
                         
                         remaining_attempts = self.get_remaining_attempts(ctx.author.id)
                         embed.set_footer(text=f"Solicitado por {ctx.author.name} | Intentos restantes: {remaining_attempts}", icon_url=ctx.author.avatar.url if ctx.author.avatar else None)
                         
-                        view = View()
-                        button = Button(label="Obtener Carta", style=discord.ButtonStyle.primary)
-                        
-                        users_attempted = set()
-                        
-                        async def button_callback(interaction):
-                            if interaction.user.id in users_attempted:
-                                await interaction.response.send_message("Ya has intentado obtener esta carta.", ephemeral=True)
-                                return
-                            
-                            users_attempted.add(interaction.user.id)
-                            
-                            if random.random() <= catch_rate:
-                                self.add_yugioh_card(interaction.user.id, card_name)
-                                self.update_balance(interaction.user.id, 10)
-                                embed.color = discord.Color.green()
-                                embed.set_footer(text=f"Obtenida por {interaction.user.name}", icon_url=interaction.user.avatar.url if interaction.user.avatar else None)
-                                await interaction.message.edit(embed=embed, view=None)
-                                await interaction.response.send_message(f"¡Felicidades! Has obtenido {card_name} y ganado 10 {self.currency_name}.")
-                                view.stop()
-                            else:
-                                await interaction.response.send_message(f"¡Oh no! No pudiste obtener {card_name}.", ephemeral=True)
-                            
-                            if len(users_attempted) >= len(ctx.channel.members):
-                                await interaction.message.edit(view=None)
-                                view.stop()
-                        
-                        button.callback = button_callback
-                        view.add_item(button)
-                        
-                        message = await ctx.send(embed=embed, view=view)
-                        
-                        await view.wait()
-                        if not view.is_finished():
-                            await message.edit(view=None)
-                            await ctx.send("Tiempo agotado. La carta ha desaparecido.")
+                        view = YugiohCatchView(self, card_name, card_id, catch_rate)
+                        await ctx.send(embed=embed, view=view)
                     else:
                         await ctx.send(f"No se pudo obtener una carta. Código de estado: {response.status}. Intenta de nuevo más tarde.")
+
+class YugiohCatchView(discord.ui.View):
+    def __init__(self, plugin, card_name, card_id, catch_rate):
+        super().__init__(timeout=60)
+        self.plugin = plugin
+        self.card_name = card_name
+        self.card_id = card_id
+        self.catch_rate = catch_rate
+        self.users_attempted = set()
+
+    @discord.ui.button(label="Obtener Carta", style=discord.ButtonStyle.primary)
+    async def catch_card(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id in self.users_attempted:
+            await interaction.response.send_message("Ya has intentado obtener esta carta.", ephemeral=True)
+            return
+
+        self.users_attempted.add(interaction.user.id)
+
+        if random.random() <= self.catch_rate:
+            self.plugin.add_yugioh_card(interaction.user.id, self.card_name, self.card_id)
+            update_balance(interaction.user.id, 10)
+
+            embed = interaction.message.embeds[0]
+            embed.color = discord.Color.green()
+            embed.set_footer(text=f"Obtenida por {interaction.user.name}", icon_url=interaction.user.avatar.url if interaction.user.avatar else None)
+            await interaction.message.edit(embed=embed, view=None)
+            await interaction.response.send_message(f"¡Felicidades! Has obtenido {self.card_name} y ganado 10 {self.plugin.currency_name}.")
+            self.stop()
+        else:
+            await interaction.response.send_message(f"¡Oh no! No pudiste obtener {self.card_name}.", ephemeral=True)
+
+        if len(self.users_attempted) >= len(interaction.channel.members):
+            await interaction.message.edit(view=None)
+            self.stop()
 
 async def setup(bot):
     await bot.add_cog(YugiohCommands(bot))

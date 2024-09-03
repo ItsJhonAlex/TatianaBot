@@ -41,6 +41,19 @@ class Attempt(Base):
     last_reset = Column(DateTime, default=datetime.utcnow)
     user = relationship("User", back_populates="attempts")
 
+class Commit(Base):
+    __tablename__ = 'commits'
+    id = Column(Integer, primary_key=True)
+    sha = Column(String, unique=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    
+class StatusMessage(Base):
+    __tablename__ = 'status_messages'
+    id = Column(Integer, primary_key=True)
+    channel_id = Column(String, unique=True)
+    message_id = Column(String)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+
 # Crear el motor de la base de datos
 db_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'bot_database.sqlite')
 engine = create_engine(f'sqlite:///{db_path}')
@@ -76,4 +89,27 @@ def get_last_daily(discord_id):
 def set_last_daily(discord_id, timestamp):
     user = get_user(discord_id)
     user.last_daily = timestamp
+    session.commit()
+
+def get_saved_sha():
+    commit = session.query(Commit).order_by(Commit.timestamp.desc()).first()
+    return commit.sha if commit else None
+
+def save_commit_sha(sha):
+    commit = Commit(sha=sha)
+    session.add(commit)
+    session.commit()
+    
+def get_status_message_id(channel_id):
+    status_message = session.query(StatusMessage).filter_by(channel_id=str(channel_id)).first()
+    return status_message.message_id if status_message else None
+
+def save_status_message_id(channel_id, message_id):
+    status_message = session.query(StatusMessage).filter_by(channel_id=str(channel_id)).first()
+    if status_message:
+        status_message.message_id = str(message_id)
+        status_message.timestamp = datetime.utcnow()
+    else:
+        status_message = StatusMessage(channel_id=str(channel_id), message_id=str(message_id))
+        session.add(status_message)
     session.commit()

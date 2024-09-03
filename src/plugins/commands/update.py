@@ -1,10 +1,10 @@
 import discord
 from discord.ext import commands
 import aiohttp
-import json
 import os
 from src.config.settings import Settings
 from src.utils.logger import Logger
+from src.utils.database import get_saved_sha, save_commit_sha
 
 def is_authorized():
     async def predicate(ctx):
@@ -24,20 +24,6 @@ async def get_latest_commit():
                 return commits[0] if commits else None
             else:
                 return None
-
-def save_commit_sha(sha):
-    data_path = os.path.join('src', 'data', 'commit_data.json')
-    with open(data_path, 'w') as f:
-        json.dump({"sha": sha}, f)
-
-def get_saved_sha():
-    data_path = os.path.join('src', 'data', 'commit_data.json')
-    try:
-        with open(data_path, 'r') as f:
-            data = json.load(f)
-            return data.get("sha")
-    except FileNotFoundError:
-        return None
 
 @commands.command(name="update", description="Verifica actualizaciones en el repositorio")
 @is_authorized()

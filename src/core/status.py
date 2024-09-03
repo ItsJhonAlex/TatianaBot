@@ -1,14 +1,10 @@
 import discord
-import json
 import os
 from src.config.settings import Settings
 from src.utils.logger import Logger
-
-STATUS_DATA_FILE = 'src/data/status_data.json'
+from src.utils.database import get_status_message_id, save_status_message_id
 
 async def update_status_embed(bot, status):
-    os.makedirs(os.path.dirname(STATUS_DATA_FILE), exist_ok=True)
-
     channel = bot.get_channel(Settings.STATUS_CHANNEL_ID)
     if not channel:
         Logger.warning(f"No se pudo encontrar el canal con ID {Settings.STATUS_CHANNEL_ID}")
@@ -61,14 +57,7 @@ async def update_status_embed(bot, status):
     else:
         embed.set_footer(text=f"Última actualización: {discord.utils.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC")
 
-    message_id = None
-    if os.path.exists(STATUS_DATA_FILE):
-        try:
-            with open(STATUS_DATA_FILE, 'r') as f:
-                data = json.load(f)
-            message_id = data.get('message_id')
-        except json.JSONDecodeError:
-            Logger.error("Error al leer el archivo JSON. Creando uno nuevo.")
+    message_id = get_status_message_id(Settings.STATUS_CHANNEL_ID)
 
     if message_id:
         try:
@@ -81,12 +70,8 @@ async def update_status_embed(bot, status):
     
     message = await channel.send(embed=embed, files=files_to_send)
     
-    try:
-        with open(STATUS_DATA_FILE, 'w') as f:
-            json.dump({'message_id': message.id}, f)
-        Logger.success(f"Nuevo embed de estado creado con ID: {message.id}")
-    except IOError as e:
-        Logger.error(f"Error al escribir en el archivo {STATUS_DATA_FILE}: {e}")
+    save_status_message_id(Settings.STATUS_CHANNEL_ID, message.id)
+    Logger.success(f"Nuevo embed de estado creado con ID: {message.id}")
 
 async def set_bot_status(bot, status):
     activity = discord.Game(name=f"Estoy {status}")

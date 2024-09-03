@@ -4,6 +4,12 @@ import aiohttp
 import random
 
 class AnimeInteractionsCommands(commands.Cog):
+    """
+    Este plugin proporciona comandos para realizar interacciones de anime, como abrazar, besar, y más.
+    También incluye comandos para mostrar imágenes de personajes de anime.
+    """
+    name = "🎭 Interacciones Anime"
+    
     def __init__(self, bot):
         self.bot = bot
         self.api_url = "https://nekos.best/api/v2/"

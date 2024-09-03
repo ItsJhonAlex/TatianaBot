@@ -5,6 +5,11 @@ import io
 import random
 
 class MemeCommands(commands.Cog):
+    """
+    Este plugin proporciona comandos para generar y mostrar memes aleatorios, preferentemente en español.
+    """
+    name = "😂 Memes"
+    
     def __init__(self, bot):
         self.bot = bot
         self.subreddits_es = [
