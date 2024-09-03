@@ -1,20 +1,19 @@
 import discord
-from discord import app_commands
 from discord.ext import commands
 import math
 
-class HelpPlugin(commands.Cog):
+class HelpCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(name="ayuda", description="Muestra el menú de ayuda del bot")
-    async def ayuda(self, interaction: discord.Interaction):
-        await self.show_main_help_menu(interaction)
+    @commands.command(name="ayuda", description="Muestra el menú de ayuda del bot")
+    async def ayuda(self, ctx):
+        await self.show_main_help_menu(ctx)
 
-    async def show_main_help_menu(self, interaction: discord.Interaction):
+    async def show_main_help_menu(self, ctx):
         embed = discord.Embed(
             title=f"Ayuda de {self.bot.user.name}",
-            description="Bienvenido al menú de ayuda. Este bot ofrece una variedad de funciones, incluyendo interacciones de anime, juegos de cartas y más. Selecciona una categoría abajo para obtener más información.",
+            description="Bienvenido al menú de ayuda. Este bot ofrece una variedad de comandos de prefijo. Selecciona una categoría abajo para obtener más información.",
             color=discord.Color.blue()
         )
         
@@ -22,27 +21,27 @@ class HelpPlugin(commands.Cog):
             embed.set_thumbnail(url=self.bot.user.avatar.url)
         
         view = HelpView(self.bot, self)
-        if interaction.response.is_done():
-            await interaction.edit_original_response(embed=embed, view=view)
-        else:
-            await interaction.response.send_message(embed=embed, view=view)
+        message = await ctx.send(embed=embed, view=view)
+        view.message = message
 
 class HelpView(discord.ui.View):
     def __init__(self, bot, help_plugin):
         super().__init__(timeout=180)
         self.bot = bot
         self.help_plugin = help_plugin
+        self.message = None
         self.add_plugin_buttons()
 
     def add_plugin_buttons(self):
         plugins = [
             cog for cog in self.bot.cogs.values() 
             if hasattr(cog, 'get_commands') and cog.get_commands() and 
-            not cog.__class__.__module__.startswith('src.plugins.commands')
+            cog.__class__.__module__.startswith('src.plugins.commands') and
+            not cog.__class__.__name__ in ['PowerCommands', 'UpdateCommands', 'HelpCommands']
         ]
         for plugin in plugins:
             button = discord.ui.Button(
-                label=getattr(plugin, 'name', plugin.__class__.__name__.replace('Plugin', '')),
+                label=getattr(plugin, 'name', plugin.__class__.__name__.replace('Commands', '')),
                 style=discord.ButtonStyle.primary
             )
             button.callback = self.create_callback(plugin)
@@ -53,7 +52,7 @@ class HelpView(discord.ui.View):
             commands = plugin.get_commands()
             if not commands:
                 embed = discord.Embed(
-                    title=f"Comandos de {getattr(plugin, 'name', plugin.__class__.__name__.replace('Plugin', ''))}",
+                    title=f"Comandos de {getattr(plugin, 'name', plugin.__class__.__name__.replace('Commands', ''))}",
                     description=plugin.__doc__ or "No hay descripción disponible.",
                     color=discord.Color.green()
                 )
@@ -62,16 +61,16 @@ class HelpView(discord.ui.View):
                 return
 
             pages = []
-            commands_per_page = 24  # Dejamos espacio para un campo de "Página X de Y"
+            commands_per_page = 24
             
             for i in range(0, len(commands), commands_per_page):
                 embed = discord.Embed(
-                    title=f"Comandos de {getattr(plugin, 'name', plugin.__class__.__name__.replace('Plugin', ''))}",
+                    title=f"Comandos de {getattr(plugin, 'name', plugin.__class__.__name__.replace('Commands', ''))}",
                     description=plugin.__doc__ or "No hay descripción disponible.",
                     color=discord.Color.green()
                 )
                 for command in commands[i:i+commands_per_page]:
-                    embed.add_field(name=f"/{command.name}", value=command.description or "Sin descripción", inline=False)
+                    embed.add_field(name=f"!{command.name}", value=command.description or "Sin descripción", inline=False)
                 
                 total_pages = math.ceil(len(commands) / commands_per_page)
                 current_page = i // commands_per_page + 1
@@ -122,7 +121,7 @@ class PaginationView(discord.ui.View):
     async def on_timeout(self):
         for item in self.children:
             item.disabled = True
-        await self.message.edit(view=self)
+        await self.original_view.message.edit(view=self)
 
 async def setup(bot):
-    await bot.add_cog(HelpPlugin(bot))
+    await bot.add_cog(HelpCommands(bot))
