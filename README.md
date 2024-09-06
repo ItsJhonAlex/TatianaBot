@@ -14,6 +14,25 @@
 
 ---
 
+## 🏆 Patrocinadores
+
+Agradecemos el apoyo de nuestros patrocinadores que hacen posible el desarrollo continuo de Tatiana:
+
+### Encantia Network
+
+<div align="center">
+
+[![Encantia Network](https://img.shields.io/badge/Encantia-Network-brightgreen?style=for-the-badge&logo=minecraft&logoColor=white)](https://discord.gg/9fZfY2Ynvu)
+
+**IP Java:** `encantia.lat`  
+**IP Bedrock:** `bedrock.encantia.lat:26036`
+
+[¡Únete a la comunidad de Encantia!](https://discord.gg/9fZfY2Ynvu)
+
+</div>
+
+---
+
 ## 📌 Descripción
 
 Tatiana es un bot de Discord avanzado que utiliza la API de Gemini AI para generar respuestas inteligentes. Con una estructura modular y fácil de expandir, Tatiana ofrece una experiencia de chat mejorada con IA, ideal para comunidades que buscan interacciones más dinámicas y personalizadas.
