@@ -1,8 +1,10 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime, Boolean, JSON
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 import os
 from datetime import datetime
+from sqlalchemy.types import TypeDecorator, VARCHAR
+import json
 
 Base = declarative_base()
 
@@ -54,14 +56,66 @@ class StatusMessage(Base):
     message_id = Column(String)
     timestamp = Column(DateTime, default=datetime.utcnow)
 
-# Crear el motor de la base de datos
+class Guild(Base):
+    __tablename__ = 'guilds'
+    id = Column(Integer, primary_key=True)
+    discord_id = Column(String, unique=True)
+    automod_enabled = Column(Boolean, default=False)
+    automod_config = Column(JSON)
+    mod_roles = Column(JSON)
+    log_channel = Column(String)
+
+class AutomodRule(Base):
+    __tablename__ = 'automod_rules'
+    id = Column(Integer, primary_key=True)
+    guild_id = Column(Integer, ForeignKey('guilds.id'))
+    rule_type = Column(String)
+    rule_config = Column(JSON)
+    guild = relationship("Guild", back_populates="automod_rules")
+
+class ModAction(Base):
+    __tablename__ = 'mod_actions'
+    id = Column(Integer, primary_key=True)
+    guild_id = Column(Integer, ForeignKey('guilds.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
+    moderator_id = Column(Integer, ForeignKey('users.id'))
+    action_type = Column(String)
+    reason = Column(String)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    guild = relationship("Guild")
+    user = relationship("User", foreign_keys=[user_id])
+    moderator = relationship("User", foreign_keys=[moderator_id])
+    
+class CustomEmbed(Base):
+    __tablename__ = 'custom_embeds'
+    id = Column(Integer, primary_key=True)
+    guild_id = Column(Integer, ForeignKey('guilds.id'))
+    name = Column(String, unique=True)
+    title = Column(String)
+    description = Column(String)
+    color = Column(Integer)
+    footer = Column(String)
+    image_url = Column(String)
+    thumbnail_url = Column(String)
+    author_name = Column(String)
+    author_icon_url = Column(String)
+    fields = Column(JSON)
+    timestamp = Column(Boolean, default=False)
+
+Guild.custom_embeds = relationship("CustomEmbed", back_populates="guild")
+CustomEmbed.guild = relationship("Guild", back_populates="custom_embeds")
+
+Guild.automod_rules = relationship("AutomodRule", back_populates="guild")
+
 db_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'bot_database.sqlite')
 engine = create_engine(f'sqlite:///{db_path}')
 
-# Crear todas las tablas
+
+def create_tables():
+    Base.metadata.create_all(engine)
+
 Base.metadata.create_all(engine)
 
-# Crear una sesión
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -113,3 +167,130 @@ def save_status_message_id(channel_id, message_id):
         status_message = StatusMessage(channel_id=str(channel_id), message_id=str(message_id))
         session.add(status_message)
     session.commit()
+
+def get_guild(discord_id):
+    guild = session.query(Guild).filter_by(discord_id=str(discord_id)).first()
+    if not guild:
+        guild = Guild(discord_id=str(discord_id))
+        session.add(guild)
+        session.commit()
+    return guild
+
+def set_automod_status(guild_id, status):
+    guild = get_guild(guild_id)
+    if guild.automod_enabled == status:
+        return False  # No se realizó ningún cambio
+    guild.automod_enabled = status
+    session.commit()
+    return True  # Se realizó un cambio
+
+def get_automod_status(guild_id):
+    guild = get_guild(guild_id)
+    return guild.automod_enabled
+
+def set_automod_config(guild_id, config):
+    guild = get_guild(guild_id)
+    guild.automod_config = config
+    session.commit()
+
+def get_automod_config(guild_id):
+    guild = get_guild(guild_id)
+    return guild.automod_config
+
+def add_automod_rule(guild_id, rule_type, rule_config):
+    guild = get_guild(guild_id)
+    rule = AutomodRule(guild_id=guild.id, rule_type=rule_type, rule_config=rule_config)
+    session.add(rule)
+    session.commit()
+
+def get_automod_rules(guild_id):
+    guild = get_guild(guild_id)
+    return guild.automod_rules
+
+def set_mod_roles(guild_id, roles):
+    guild = get_guild(guild_id)
+    guild.mod_roles = roles
+    session.commit()
+
+def get_mod_roles(guild_id):
+    guild = get_guild(guild_id)
+    return guild.mod_roles
+
+def set_log_channel(guild_id, channel_id):
+    guild = get_guild(guild_id)
+    guild.log_channel = str(channel_id)
+    session.commit()
+
+def get_log_channel(guild_id):
+    guild = get_guild(guild_id)
+    return guild.log_channel
+
+def add_mod_action(guild_id, user_id, moderator_id, action_type, reason):
+    action = ModAction(
+        guild_id=get_guild(guild_id).id,
+        user_id=get_user(user_id).id,
+        moderator_id=get_user(moderator_id).id,
+        action_type=action_type,
+        reason=reason
+    )
+    session.add(action)
+    session.commit()
+
+def get_mod_actions(guild_id, user_id=None):
+    query = session.query(ModAction).filter_by(guild_id=get_guild(guild_id).id)
+    if user_id:
+        query = query.filter_by(user_id=get_user(user_id).id)
+    return query.all()
+
+
+def create_embed(guild_id, name, title, description, color=None, footer=None, image_url=None, 
+                 thumbnail_url=None, author_name=None, author_icon_url=None, fields=None, timestamp=False):
+    try:
+        guild = get_guild(guild_id)
+        embed = CustomEmbed(
+            guild_id=guild.id,
+            name=name,
+            title=title,
+            description=description,
+            color=color,
+            footer=footer,
+            image_url=image_url,
+            thumbnail_url=thumbnail_url,
+            author_name=author_name,
+            author_icon_url=author_icon_url,
+            fields=fields,
+            timestamp=timestamp
+        )
+        session.add(embed)
+        session.commit()
+        return embed
+    except Exception as e:
+        session.rollback()
+        raise e
+
+def get_embed(guild_id, name):
+    guild = get_guild(guild_id)
+    return session.query(CustomEmbed).filter_by(guild_id=guild.id, name=name).first()
+
+def update_embed(guild_id, name, **kwargs):
+    embed = get_embed(guild_id, name)
+    if embed:
+        for key, value in kwargs.items():
+            setattr(embed, key, value)
+        session.commit()
+    return embed
+
+def delete_embed(guild_id, name):
+    embed = get_embed(guild_id, name)
+    if embed:
+        session.delete(embed)
+        session.commit()
+        return True
+    return False
+
+def get_all_embeds(guild_id):
+    guild = get_guild(guild_id)
+    return session.query(CustomEmbed).filter_by(guild_id=guild.id).all()
+
+create_tables()
+

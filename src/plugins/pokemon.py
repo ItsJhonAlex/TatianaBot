@@ -60,6 +60,9 @@ class PokemonPlugin(commands.Cog):
         session.add(new_pokemon)
         session.commit()
 
+    def get_commands(self):
+        return [command for command in self.bot.tree.walk_commands() if command.binding == self]
+
     @app_commands.command(name="pokedex", description="Muestra tu Pokédex")
     async def pokedex(self, interaction: discord.Interaction):
         user = get_user(interaction.user.id)
@@ -162,6 +165,9 @@ class PokemonCatchView(discord.ui.View):
         if len(self.users_attempted) >= len(interaction.channel.members):
             await interaction.message.edit(view=None)
             self.stop()
+            
+    def get_commands(self):
+        return [command for command in self.bot.tree.walk_commands() if command.binding == self]
 
 async def setup(bot):
     await bot.add_cog(PokemonPlugin(bot))

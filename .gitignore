@@ -60,3 +60,6 @@ coverage.xml
 
 # Hosting
 discloud.config
+
+# Logs
+logs/

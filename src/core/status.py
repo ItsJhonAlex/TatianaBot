@@ -93,6 +93,6 @@ async def set_bot_status(bot, status):
     except FileNotFoundError:
         Logger.warning(f"No se encontró el archivo de avatar para el estado {status}")
     except Exception as e:
-        Logger.error(f"Error inesperado al actualizar el avatar: {e}")
+        Logger.error(f"Error inesperado al actualizar el avatar: {str(e)}")
     
     await update_status_embed(bot, status)

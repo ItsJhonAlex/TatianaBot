@@ -70,7 +70,7 @@ async def update(ctx):
         else:
             await ctx.send("No se pudo obtener información de la última actualización.")
     except Exception as e:
-        Logger.error(f"Error al verificar actualizaciones: {e}")
+        Logger.error(f"Error al verificar actualizaciones: {str(e)}")
         await ctx.send("Ocurrió un error al verificar las actualizaciones.")
 
 async def setup(bot):

@@ -20,6 +20,9 @@ class YugiohPlugin(commands.Cog):
         self.attempts_reset_time = 3600  # 1 hora en segundos
         self.max_attempts = 10
 
+    def get_commands(self):
+        return [command for command in self.bot.tree.walk_commands() if command.binding == self]
+
     def get_remaining_attempts(self, user_id):
         user = get_user(user_id)
         attempt = session.query(Attempt).filter_by(user_id=user.id, attempt_type='yugioh').first()

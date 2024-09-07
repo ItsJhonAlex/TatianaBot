@@ -49,6 +49,10 @@ Tatiana es un bot de Discord avanzado que utiliza la API de Gemini AI para gener
 - 🛠️ Robusto manejo de errores y sistema de logging
 - 🔢 Soporte para comandos con prefijo y comandos de barra (/)
 - 📊 Panel de estado del bot actualizado y visualmente atractivo
+- 🛡️ Sistema de automod avanzado con detección de spam y palabras prohibidas
+- 🐾 Sistema de captura de Pokémon con inventario y estadísticas
+- 🃏 Sistema de cartas Yu-Gi-Oh! con obtención aleatoria y deck
+- 💰 Sistema de economía con monedas virtuales y recompensas
 
 ---
 
@@ -101,8 +105,81 @@ Tatiana ofrece una amplia gama de funcionalidades organizadas en diferentes cate
 - 🎱 Bola 8 Mágica: Respuestas aleatorias a preguntas de sí o no.
 - 🏓 Ping: Verificación de la latencia del bot con un embed mejorado.
 - 📈 Estado: Panel de estado del bot actualizado y visualmente atractivo.
+- 🔧 Embed Manager: Creación y gestión de embeds personalizados.
+- 🛡️ Automod: Sistema de moderación automática configurable.
 
 Para ver todos los comandos disponibles, usa `/ayuda` en Discord. 
+
+---
+
+## 🛡️ Sistema de Automod
+
+Tatiana incluye un potente sistema de automod para ayudar a mantener tu servidor seguro y ordenado. Aquí te explicamos cómo configurarlo y usarlo:
+
+### Configuración del Automod
+
+1. **Activar el Automod**:
+   ```
+   /automod_enable
+   ```
+
+2. **Configurar el canal de logs**:
+   ```
+   /automod_setlogchannel #canal-de-logs
+   ```
+
+3. **Establecer roles de moderador**:
+   ```
+   /automod_setroles 123456789 987654321
+   ```
+   Reemplaza los números con los IDs de los roles de moderador.
+
+4. **Añadir reglas de automod**:
+   - Para palabras prohibidas:
+     ```
+     /automod_addrule banned_words {"words": ["palabra1", "palabra2"], "action": "delete"}
+     ```
+   - Para detección de spam:
+     ```
+     /automod_addrule spam {"action": "mute"}
+     ```
+   - Para bloquear enlaces:
+     ```
+     /automod_addrule links {"action": "warn"}
+     ```
+
+5. **Configurar la detección de spam**:
+   ```
+   /automod_spam_config 5 5
+   ```
+   Esto configura el automod para detectar spam si un usuario envía más de 5 mensajes en 5 segundos.
+
+### Uso del Automod
+
+Una vez configurado, el automod funcionará automáticamente. Algunas acciones que realizará:
+
+- Eliminará mensajes que contengan palabras prohibidas.
+- Silenciará temporalmente a usuarios que envíen spam.
+- Advertirá a usuarios que envíen enlaces (si está configurado así).
+
+### Comandos adicionales
+
+- **Ver la configuración actual del automod**:
+  ```
+  /automod_config
+  ```
+
+- **Desactivar el automod**:
+  ```
+  /automod_disable
+  ```
+
+- **Ver el estado del automod**:
+  ```
+  /automod_status
+  ```
+
+El sistema de automod es altamente personalizable y puede adaptarse a las necesidades específicas de tu servidor. Experimenta con diferentes configuraciones para encontrar la que mejor se ajuste a tu comunidad.
 
 ---
 

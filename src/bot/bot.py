@@ -38,9 +38,9 @@ class DiscordBot(commands.Bot):
         except FileNotFoundError as e:
             Logger.warning(f"No se encontró el archivo: {e.filename}")
         except discord.errors.HTTPException as e:
-            Logger.error(f"Error al actualizar el avatar o banner: {e}")
+            Logger.error(f"Error al actualizar el avatar o banner: {str(e)}")
         except Exception as e:
-            Logger.error(f"Ocurrió un error inesperado al actualizar el avatar o banner: {e}")
+            Logger.error(f"Ocurrió un error inesperado al actualizar el avatar o banner: {str(e)}")
 
         await self.change_presence(activity=discord.Game(name="Siendo Tatiana"))
         try:
@@ -59,7 +59,7 @@ class DiscordBot(commands.Bot):
             else:
                 Logger.warning(f"Canal con ID {Settings.CHANNEL_ID} no encontrado.")
         except Exception as e:
-            Logger.error(f"Ocurrió un error al iniciar: {e}")
+            Logger.error(f"Ocurrió un error al iniciar: {str(e)}")
 
     async def on_message(self, message):
         if message.author == self.user:
@@ -99,7 +99,7 @@ class DiscordBot(commands.Bot):
                             else:
                                 Logger.error("No se pudo generar una respuesta debido a un error de IA.")
                 except Exception as e:
-                    Logger.error(f"Ocurrió un error al procesar el mensaje: {e}")
+                    Logger.error(f"Ocurrió un error al procesar el mensaje: {str(e)}")
         
         await self.process_commands(message)
 

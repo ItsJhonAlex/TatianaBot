@@ -37,6 +37,7 @@ packaging==24.1
 pluggy==1.5.0
 proto-plus==1.24.0
 protobuf==4.25.4
+psutil==6.0.0
 pyasn1==0.6.0
 pyasn1_modules==0.4.0
 pycparser==2.22

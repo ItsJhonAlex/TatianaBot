@@ -4,6 +4,12 @@ from discord.ext import commands
 import math
 
 class HelpPlugin(commands.Cog):
+    """
+    Este plugin proporciona un menú de ayuda para los comandos del bot,
+    incluyendo la navegación entre categorías y comandos disponibles.
+    """
+    name = "💡 Ayuda"
+    
     def __init__(self, bot):
         self.bot = bot
 
@@ -14,7 +20,7 @@ class HelpPlugin(commands.Cog):
     async def show_main_help_menu(self, interaction: discord.Interaction):
         embed = discord.Embed(
             title=f"Ayuda de {self.bot.user.name}",
-            description="Bienvenido al menú de ayuda. Este bot ofrece una variedad de funciones, incluyendo interacciones de anime, juegos de cartas y más. Selecciona una categoría abajo para obtener más información.",
+            description="Bienvenido al menú de ayuda. Este bot ofrece una variedad de funciones, incluyendo interacciones de anime, juegos de cartas, gestión de embeds y mensajes de bienvenida/despedida. Selecciona una categoría abajo para obtener más información.",
             color=discord.Color.blue()
         )
         
