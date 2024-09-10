@@ -37,7 +37,7 @@ class HelpView(discord.ui.View):
             cog for cog in self.bot.cogs.values() 
             if hasattr(cog, 'get_commands') and cog.get_commands() and 
             cog.__class__.__module__.startswith('src.plugins.commands') and
-            not cog.__class__.__name__ in ['PowerCommands', 'UpdateCommands', 'HelpCommands']
+            not cog.__class__.__name__ in ['PowerCommands', 'UpdateCommands', 'HelpCommands', 'RulesCommands']
         ]
         for plugin in plugins:
             button = discord.ui.Button(

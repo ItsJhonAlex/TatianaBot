@@ -14,6 +14,10 @@ class Settings:
     GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
     CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
 
+    # Spotify API Credentials
+    SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
+    SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
+
     # Variables de configuración
     SHOW_TYPING = True
     CLEAR_MESSAGES_ON_START = True
