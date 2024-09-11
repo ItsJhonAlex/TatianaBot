@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime, Boolean, JSON
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.sql import func
 import os
 from datetime import datetime
 from sqlalchemy.types import TypeDecorator, VARCHAR
@@ -102,9 +103,17 @@ class CustomEmbed(Base):
     fields = Column(JSON)
     timestamp = Column(Boolean, default=False)
 
+class SongQueue(Base):
+    __tablename__ = 'song_queues'
+    id = Column(Integer, primary_key=True)
+    guild_id = Column(String)
+    song_url = Column(String)
+    title = Column(String)
+    requester_id = Column(String)
+    position = Column(Integer)
+    
 Guild.custom_embeds = relationship("CustomEmbed", back_populates="guild")
 CustomEmbed.guild = relationship("Guild", back_populates="custom_embeds")
-
 Guild.automod_rules = relationship("AutomodRule", back_populates="guild")
 
 db_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'bot_database.sqlite')
@@ -291,6 +300,26 @@ def delete_embed(guild_id, name):
 def get_all_embeds(guild_id):
     guild = get_guild(guild_id)
     return session.query(CustomEmbed).filter_by(guild_id=guild.id).all()
+
+def add_song_to_queue(guild_id, song_url, title, requester_id):
+    position = session.query(func.max(SongQueue.position)).filter_by(guild_id=guild_id).scalar() or 0
+    new_song = SongQueue(guild_id=guild_id, song_url=song_url, title=title, requester_id=requester_id, position=position + 1)
+    session.add(new_song)
+    session.commit()
+
+def get_guild_queue(guild_id):
+    return session.query(SongQueue).filter_by(guild_id=guild_id).order_by(SongQueue.position).all()
+
+def remove_song_from_queue(guild_id):
+    song = session.query(SongQueue).filter_by(guild_id=guild_id).order_by(SongQueue.position).first()
+    if song:
+        session.delete(song)
+        session.commit()
+    return song
+
+def clear_guild_queue(guild_id):
+    session.query(SongQueue).filter_by(guild_id=guild_id).delete()
+    session.commit()
 
 create_tables()
 

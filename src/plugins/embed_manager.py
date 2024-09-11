@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from src.utils.database import create_embed, get_embed, update_embed, delete_embed, get_all_embeds
-from src.utils.logger import Logger
+from src.utils.logger import bot_logger, debug, info, success, warning, error, critical
 
 class EmbedCreator(discord.ui.View):
     def __init__(self, bot, interaction, existing_embed=None):
@@ -17,7 +17,7 @@ class EmbedCreator(discord.ui.View):
         try:
             await interaction.response.send_modal(TitleModal(self))
         except Exception as e:
-            Logger.error(f"Error al mostrar el modal de título: {str(e)}")
+            error(f"Error al mostrar el modal de título: {str(e)}")
             await interaction.response.send_message("Hubo un error al mostrar el modal de título. Por favor, inténtalo de nuevo.", ephemeral=True)
 
     @discord.ui.button(label="Descripción", style=discord.ButtonStyle.primary)
@@ -335,11 +335,11 @@ class EmbedManager(commands.Cog):
     @app_commands.command(name="embed_edit", description="Edita un embed existente")
     @app_commands.checks.has_permissions(manage_messages=True)
     async def edit_embed(self, interaction: discord.Interaction, name: str):
-        Logger.info(f"Intentando editar el embed '{name}' para el servidor {interaction.guild.id}")
+        info(f"Intentando editar el embed '{name}' para el servidor {interaction.guild.id}")
         try:
             existing_embed = get_embed(interaction.guild.id, name)
             if existing_embed:
-                Logger.info(f"Embed '{name}' encontrado. Creando objeto discord.Embed")
+                info(f"Embed '{name}' encontrado. Creando objeto discord.Embed")
                 discord_embed = discord.Embed(
                     title=existing_embed.title,
                     description=existing_embed.description,
@@ -359,17 +359,17 @@ class EmbedManager(commands.Cog):
                 if existing_embed.timestamp:
                     discord_embed.timestamp = discord.utils.utcnow()
                 
-                Logger.info(f"Creando vista EmbedCreator para el embed '{name}'")
+                info(f"Creando vista EmbedCreator para el embed '{name}'")
                 view = EmbedCreator(self.bot, interaction, discord_embed)
                 view.embed_name = name
                 
-                Logger.info(f"Enviando respuesta con la vista de edición para el embed '{name}'")
+                info(f"Enviando respuesta con la vista de edición para el embed '{name}'")
                 await interaction.response.send_message(f"Editando el embed '{name}':", view=view, embed=discord_embed, ephemeral=True)
             else:
-                Logger.warning(f"No se encontró el embed '{name}' para el servidor {interaction.guild.id}")
+                warning(f"No se encontró el embed '{name}' para el servidor {interaction.guild.id}")
                 await interaction.response.send_message(f"No se encontró el embed '{name}'.", ephemeral=True)
         except Exception as e:
-            Logger.error(f"Error al editar el embed '{name}': {str(e)}")
+            error(f"Error al editar el embed '{name}': {str(e)}")
             await interaction.response.send_message(f"Ocurrió un error al editar el embed: {str(e)}", ephemeral=True)
 
     def get_commands(self):

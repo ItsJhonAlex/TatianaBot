@@ -1,7 +1,7 @@
 import google.generativeai as genai
 from src.config.settings import Settings
 import google.api_core.exceptions
-from src.utils.logger import Logger
+from src.utils.logger import bot_logger, debug, info, success, warning, error, critical
 
 class GeminiInterface:
     MODEL_NAME = 'gemini-1.5-flash'
@@ -80,11 +80,11 @@ class GeminiInterface:
     def generate_text(convo, prompt):
         try:
             response = convo.send_message(prompt)
-            Logger.debug(f"Respuesta de Gemini: {response.text}")
+            debug(f"Respuesta de Gemini: {response.text}")
             return response.text
         except google.api_core.exceptions.GoogleAPIError as e:
             if "403" in str(e):
-                Logger.error("Error 403: Ubicación de IA no disponible")
+                error("Error 403: Ubicación de IA no disponible")
                 return None
             else:
                 raise e

@@ -6,7 +6,7 @@ from src.chat.gemini_interface import GeminiInterface
 from src.core.system import handle_power_control
 from src.plugins import load_plugins
 import os
-from src.utils.logger import Logger
+from src.utils.logger import bot_logger, debug, info, success, warning, error, critical
 
 class DiscordBot(commands.Bot):
     def __init__(self, intents):
@@ -14,13 +14,13 @@ class DiscordBot(commands.Bot):
         self.convo = GeminiInterface.create_conversation()
 
     async def setup_hook(self):
-        Logger.info("Iniciando carga de plugins...")
+        info("Iniciando carga de plugins...")
         await load_plugins(self)
         await self.tree.sync()
-        Logger.success("Comandos de prefijo y de barra cargados.")
+        success("Comandos de prefijo y de barra cargados.")
 
     async def on_ready(self):
-        Logger.info(f'Nos hemos conectado como {self.user}')
+        info(f'Nos hemos conectado como {self.user}')
         
         # Configurar el avatar del bot
         avatar_path = os.path.join('src', 'assets', 'avatar.png')
@@ -34,13 +34,13 @@ class DiscordBot(commands.Bot):
             await self.user.edit(avatar=avatar_data)
             await self.user.edit(banner=banner_data)
             
-            Logger.success("Avatar y banner del bot actualizados con éxito.")
+            success("Avatar y banner del bot actualizados con éxito.")
         except FileNotFoundError as e:
-            Logger.warning(f"No se encontró el archivo: {e.filename}")
+            warning(f"No se encontró el archivo: {e.filename}")
         except discord.errors.HTTPException as e:
-            Logger.error(f"Error al actualizar el avatar o banner: {str(e)}")
+            error(f"Error al actualizar el avatar o banner: {str(e)}")
         except Exception as e:
-            Logger.error(f"Ocurrió un error inesperado al actualizar el avatar o banner: {str(e)}")
+            error(f"Ocurrió un error inesperado al actualizar el avatar o banner: {str(e)}")
 
         await self.change_presence(activity=discord.Game(name="Siendo Tatiana"))
         try:
@@ -55,11 +55,11 @@ class DiscordBot(commands.Bot):
                     for chunk in chunks:
                         await channel.send(chunk)
                 else:
-                    Logger.error("No se pudo generar el mensaje de inicio debido a un error de IA.")
+                    error("No se pudo generar el mensaje de inicio debido a un error de IA.")
             else:
-                Logger.warning(f"Canal con ID {Settings.CHANNEL_ID} no encontrado.")
+                warning(f"Canal con ID {Settings.CHANNEL_ID} no encontrado.")
         except Exception as e:
-            Logger.error(f"Ocurrió un error al iniciar: {str(e)}")
+            error(f"Ocurrió un error al iniciar: {str(e)}")
 
     async def on_message(self, message):
         if message.author == self.user:
@@ -69,7 +69,7 @@ class DiscordBot(commands.Bot):
             if not message.content.startswith("//"):
                 try:
                     formatted_message = f"{message.author.name}: {message.content}"
-                    Logger.debug(formatted_message)
+                    debug(formatted_message)
 
                     if Settings.SHOW_TYPING:
                         async with message.channel.typing():
@@ -84,7 +84,7 @@ class DiscordBot(commands.Bot):
                                             raise ValueError("El fragmento excede los 2000 caracteres.")
                                         await message.reply(chunk)
                                 else:
-                                    Logger.error("No se pudo generar una respuesta debido a un error de IA.")
+                                    error("No se pudo generar una respuesta debido a un error de IA.")
                     else:
                         if message.content:
                             response = GeminiInterface.generate_text(self.convo, formatted_message)
@@ -97,9 +97,9 @@ class DiscordBot(commands.Bot):
                                         raise ValueError("El fragmento excede los 2000 caracteres.")
                                     await message.reply(chunk)
                             else:
-                                Logger.error("No se pudo generar una respuesta debido a un error de IA.")
+                                error("No se pudo generar una respuesta debido a un error de IA.")
                 except Exception as e:
-                    Logger.error(f"Ocurrió un error al procesar el mensaje: {str(e)}")
+                    error(f"Ocurrió un error al procesar el mensaje: {str(e)}")
         
         await self.process_commands(message)
 

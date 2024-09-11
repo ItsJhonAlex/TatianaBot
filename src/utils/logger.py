@@ -1,45 +1,87 @@
-from colorama import Fore, Style, init
-import time
+import logging
 import os
-import traceback
+from logging.handlers import RotatingFileHandler
+from colorama import Fore, Style, init
 
 init(autoreset=True)
 
+class ColoredFormatter(logging.Formatter):
+    COLORS = {
+        'DEBUG': Fore.MAGENTA,
+        'INFO': Fore.CYAN,
+        'SUCCESS': Fore.GREEN,
+        'WARNING': Fore.YELLOW,
+        'ERROR': Fore.RED,
+        'CRITICAL': Fore.RED + Style.BRIGHT,
+    }
+
+    def format(self, record):
+        levelname = record.levelname
+        if levelname in self.COLORS:
+            record.levelname = f"{self.COLORS[levelname]}{levelname}{Style.RESET_ALL}"
+        return super().format(record)
+
 class Logger:
     LOG_DIR = 'logs'
+    LOG_FILE = 'bot.log'
+    MAX_BYTES = 5 * 1024 * 1024  # 5 MB
+    BACKUP_COUNT = 5
 
     @staticmethod
-    def ensure_log_directory():
+    def setup():
         if not os.path.exists(Logger.LOG_DIR):
             os.makedirs(Logger.LOG_DIR)
 
-    @staticmethod
-    def log_to_file(level, message):
-        Logger.ensure_log_directory()
-        timestamp = time.strftime('%Y-%m-%d_%H-%M-%S')
-        filename = f"{Logger.LOG_DIR}/error_{timestamp}.log"
-        
-        with open(filename, 'w') as f:
-            f.write(f"[{level}] {time.strftime('%Y-%m-%d %H:%M:%S')} - {message}\n")
-            f.write(traceback.format_exc())
+        logger = logging.getLogger('bot')
+        logger.setLevel(logging.DEBUG)
 
-    @staticmethod
-    def info(message):
-        print(f"{Fore.CYAN}[INFO] {Style.RESET_ALL}{time.strftime('%Y-%m-%d %H:%M:%S')} - {message}")
+        # Configurar el manejador de archivo
+        file_handler = RotatingFileHandler(
+            os.path.join(Logger.LOG_DIR, Logger.LOG_FILE),
+            maxBytes=Logger.MAX_BYTES,
+            backupCount=Logger.BACKUP_COUNT
+        )
+        file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        file_handler.setFormatter(file_formatter)
+        file_handler.setLevel(logging.DEBUG)
 
-    @staticmethod
-    def success(message):
-        print(f"{Fore.GREEN}[SUCCESS] {Style.RESET_ALL}{time.strftime('%Y-%m-%d %H:%M:%S')} - {message}")
+        # Configurar el manejador de consola
+        console_handler = logging.StreamHandler()
+        console_formatter = ColoredFormatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        console_handler.setFormatter(console_formatter)
+        console_handler.setLevel(logging.INFO)
 
-    @staticmethod
-    def warning(message):
-        print(f"{Fore.YELLOW}[WARNING] {Style.RESET_ALL}{time.strftime('%Y-%m-%d %H:%M:%S')} - {message}")
+        # Agregar los manejadores al logger
+        logger.addHandler(file_handler)
+        logger.addHandler(console_handler)
 
-    @staticmethod
-    def error(message):
-        print(f"{Fore.RED}[ERROR] {Style.RESET_ALL}{time.strftime('%Y-%m-%d %H:%M:%S')} - {message}")
-        Logger.log_to_file("ERROR", message)
+        # Agregar nivel de log personalizado 'SUCCESS'
+        logging.SUCCESS = 25  # Entre INFO y WARNING
+        logging.addLevelName(logging.SUCCESS, 'SUCCESS')
+        setattr(logger, 'success', lambda message, *args: logger._log(logging.SUCCESS, message, args))
 
-    @staticmethod
-    def debug(message):
-        print(f"{Fore.MAGENTA}[DEBUG] {Style.RESET_ALL}{time.strftime('%Y-%m-%d %H:%M:%S')} - {message}")
+        return logger
+
+# Crear una instancia global del logger
+bot_logger = Logger.setup()
+
+# Funciones de conveniencia
+def debug(message):
+    bot_logger.debug(message)
+
+def info(message):
+    bot_logger.info(message)
+
+def success(message):
+    bot_logger.log(25, message)  # 25 es el nivel que definimos para SUCCESS
+
+logging.addLevelName(25, "SUCCESS")
+
+def warning(message):
+    bot_logger.warning(message)
+
+def error(message):
+    bot_logger.error(message)
+
+def critical(message):
+    bot_logger.critical(message)

@@ -2,7 +2,7 @@ import os
 import importlib
 import asyncio
 from discord.ext import commands
-from src.utils.logger import Logger
+from src.utils.logger import bot_logger, debug, info, success, warning, error, critical
 
 async def load_cogs(bot):
     plugin_dir = os.path.dirname(__file__)
@@ -13,11 +13,11 @@ async def load_cogs(bot):
                 module = importlib.import_module(module_name)
                 if hasattr(module, 'setup'):
                     await module.setup(bot)
-                    Logger.success(f"Cargado: {module_name}")
+                    success(f"Cargado: {module_name}")
             except commands.errors.ExtensionAlreadyLoaded:
-                Logger.warning(f"El plugin {module_name} ya está cargado")
+                warning(f"El plugin {module_name} ya está cargado")
             except Exception as e:
-                Logger.error(f"Error al cargar {str(module_name)}: {str(e)}")
+                error(f"Error al cargar {str(module_name)}: {str(e)}")
 
 async def load_prefix_commands(bot):
     commands_dir = os.path.join(os.path.dirname(__file__), 'commands')
@@ -28,15 +28,15 @@ async def load_prefix_commands(bot):
                 module = importlib.import_module(module_name)
                 if hasattr(module, 'setup'):
                     await module.setup(bot)
-                    Logger.success(f"Cargado: {module_name}")
+                    success(f"Cargado: {module_name}")
             except commands.errors.CommandRegistrationError:
-                Logger.warning(f"El comando de {module_name} ya está registrado")
+                warning(f"El comando de {module_name} ya está registrado")
             except Exception as e:
-                Logger.error(f"Error al cargar {str(module_name)}: {str(e)}")
+                error(f"Error al cargar {str(module_name)}: {str(e)}")
 
 async def load_plugins(bot):
-    Logger.info("Cargando cogs...")
+    info("Cargando cogs...")
     await load_cogs(bot)
-    Logger.info("Cargando comandos de prefijo...")
+    info("Cargando comandos de prefijo...")
     await load_prefix_commands(bot)
-    Logger.success("Plugins cargados.")
+    success("Plugins cargados.")

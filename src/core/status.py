@@ -1,13 +1,13 @@
 import discord
 import os
 from src.config.settings import Settings
-from src.utils.logger import Logger
+from src.utils.logger import bot_logger, debug, info, success, warning, error, critical
 from src.utils.database import get_status_message_id, save_status_message_id
 
 async def update_status_embed(bot, status):
     channel = bot.get_channel(Settings.STATUS_CHANNEL_ID)
     if not channel:
-        Logger.warning(f"No se pudo encontrar el canal con ID {Settings.STATUS_CHANNEL_ID}")
+        warning(f"No se pudo encontrar el canal con ID {Settings.STATUS_CHANNEL_ID}")
         return
 
     status_emoji = "🟢" if status == "despierta" else "🔴" if status == "durmiendo" else "🟠"
@@ -63,15 +63,15 @@ async def update_status_embed(bot, status):
         try:
             message = await channel.fetch_message(message_id)
             await message.edit(embed=embed, attachments=files_to_send)
-            Logger.success("Embed de estado actualizado.")
+            success("Embed de estado actualizado.")
             return
         except discord.NotFound:
-            Logger.info("Mensaje no encontrado. Creando uno nuevo.")
+            info("Mensaje no encontrado. Creando uno nuevo.")
     
     message = await channel.send(embed=embed, files=files_to_send)
     
     save_status_message_id(Settings.STATUS_CHANNEL_ID, message.id)
-    Logger.success(f"Nuevo embed de estado creado con ID: {message.id}")
+    success(f"Nuevo embed de estado creado con ID: {message.id}")
 
 async def set_bot_status(bot, status):
     activity = discord.Game(name=f"Estoy {status}")
@@ -84,15 +84,15 @@ async def set_bot_status(bot, status):
             avatar_data = avatar_file.read()
         try:
             await bot.user.edit(avatar=avatar_data)
-            Logger.success(f"Avatar cambiado a {status}.png")
+            success(f"Avatar cambiado a {status}.png")
         except discord.errors.HTTPException as e:
             if e.code == 50035:  # Error de cambio de avatar demasiado rápido
-                Logger.warning("No se pudo cambiar el avatar debido a las limitaciones de Discord. Se mantendrá el avatar actual.")
+                warning("No se pudo cambiar el avatar debido a las limitaciones de Discord. Se mantendrá el avatar actual.")
             else:
                 raise  # Re-lanzar la excepción si es un error diferente
     except FileNotFoundError:
-        Logger.warning(f"No se encontró el archivo de avatar para el estado {status}")
+        warning(f"No se encontró el archivo de avatar para el estado {status}")
     except Exception as e:
-        Logger.error(f"Error inesperado al actualizar el avatar: {str(e)}")
+        error(f"Error inesperado al actualizar el avatar: {str(e)}")
     
     await update_status_embed(bot, status)

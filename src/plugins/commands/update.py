@@ -3,7 +3,7 @@ from discord.ext import commands
 import aiohttp
 import os
 from src.config.settings import Settings
-from src.utils.logger import Logger
+from src.utils.logger import bot_logger, debug, info, success, warning, error, critical
 from src.utils.database import get_saved_sha, save_commit_sha
 
 def is_authorized():
@@ -70,7 +70,7 @@ async def update(ctx):
         else:
             await ctx.send("No se pudo obtener información de la última actualización.")
     except Exception as e:
-        Logger.error(f"Error al verificar actualizaciones: {str(e)}")
+        error(f"Error al verificar actualizaciones: {str(e)}")
         await ctx.send("Ocurrió un error al verificar las actualizaciones.")
 
 async def setup(bot):

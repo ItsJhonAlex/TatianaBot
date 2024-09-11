@@ -3,7 +3,7 @@ import psutil
 import asyncio
 from datetime import datetime
 from src.config.settings import Settings
-from src.utils.logger import Logger
+from src.utils.logger import bot_logger, debug, info, success, warning, error, critical
 
 class BotMonitor:
     def __init__(self, bot):
@@ -29,7 +29,7 @@ class BotMonitor:
     async def update_monitor_channel(self):
         channel = self.bot.get_channel(Settings.MONITOR_CHANNEL_ID)
         if not channel:
-            Logger.warning(f"Canal de monitoreo con ID {Settings.MONITOR_CHANNEL_ID} no encontrado.")
+            warning(f"Canal de monitoreo con ID {Settings.MONITOR_CHANNEL_ID} no encontrado.")
             return
 
         embed = discord.Embed(title="Estado del Bot", color=discord.Color.blue())
@@ -58,29 +58,24 @@ class BotMonitor:
             try:
                 await self.update_monitor_channel()
             except Exception as e:
-                Logger.error(f"Error en el bucle de monitoreo: {str(e)}")
+                error(f"Error en el bucle de monitoreo: {str(e)}")
             await asyncio.sleep(60)  # Actualizar cada minuto
 
 def setup(bot):
     monitor = BotMonitor(bot)
     
-    # Sobrescribir los métodos de Logger para capturar los mensajes de consola
-    original_info = Logger.info
-    original_success = Logger.success
-    original_warning = Logger.warning
-    original_error = Logger.error
-    original_debug = Logger.debug
+    # Crear nuevas funciones de logging que también añaden mensajes a la consola del monitor
+    def create_logger_with_monitor(original_func):
+        def new_func(message):
+            original_func(message)
+            monitor.add_console_message(f"[{original_func.__name__.upper()}] {message}")
+        return new_func
 
-    def new_logger(original_method):
-        def wrapper(message):
-            original_method(message)
-            monitor.add_console_message(f"[{original_method.__name__.upper()}] {message}")
-        return wrapper
-
-    Logger.info = new_logger(original_info)
-    Logger.success = new_logger(original_success)
-    Logger.warning = new_logger(original_warning)
-    Logger.error = new_logger(original_error)
-    Logger.debug = new_logger(original_debug)
+    # Reemplazar las funciones de logging originales con las nuevas
+    bot_logger.debug = create_logger_with_monitor(bot_logger.debug)
+    bot_logger.info = create_logger_with_monitor(bot_logger.info)
+    bot_logger.success = create_logger_with_monitor(bot_logger.success)
+    bot_logger.warning = create_logger_with_monitor(bot_logger.warning)
+    bot_logger.error = create_logger_with_monitor(bot_logger.error)
 
     return monitor
