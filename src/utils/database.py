@@ -112,6 +112,28 @@ class SongQueue(Base):
     requester_id = Column(String)
     position = Column(Integer)
     
+class Character(Base):
+    __tablename__ = 'characters'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(String, unique=True)
+    name = Column(String)
+    surname = Column(String)
+    gender = Column(String)  
+    primary_class = Column(String)
+    secondary_class = Column(String)
+    primordial_class = Column(String)
+    profession = Column(String)
+    level = Column(Integer)
+    experience = Column(Integer)
+    health = Column(Integer)
+    mana = Column(Integer)
+    strength = Column(Integer)
+    intelligence = Column(Integer)
+    dexterity = Column(Integer)
+    wisdom = Column(Integer)
+    charisma = Column(Integer)
+    constitution = Column(Integer)
+
 Guild.custom_embeds = relationship("CustomEmbed", back_populates="guild")
 CustomEmbed.guild = relationship("Guild", back_populates="custom_embeds")
 Guild.automod_rules = relationship("AutomodRule", back_populates="guild")

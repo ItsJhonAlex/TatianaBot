@@ -39,4 +39,6 @@ async def load_plugins(bot):
     await load_cogs(bot)
     info("Cargando comandos de prefijo...")
     await load_prefix_commands(bot)
-    success("Plugins cargados.")
+    info("Cargando módulos del juego RPG...")
+    await bot.load_extension("src.game")
+    success("Plugins y módulos cargados.")
