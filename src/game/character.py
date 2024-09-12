@@ -1,9 +1,10 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from src.utils.database import session, Character, get_balance
+from src.utils.database import session, Character, get_balance, delete_character
 from src.game.classes import CLASSES, PROFESSIONS, get_primordial_class
 from src.game.stats import calculate_stats
+from src.game.races import Race, get_race_description
 import random
 
 class CharacterCreation(commands.Cog):
@@ -33,6 +34,7 @@ class CharacterCreation(commands.Cog):
         embed = discord.Embed(title=f"📊 Perfil de {character.name} {character.surname}", color=discord.Color.blue())
         embed.set_thumbnail(url=interaction.user.avatar.url if interaction.user.avatar else None)
         embed.add_field(name="👤 Género", value=character.gender, inline=True)
+        embed.add_field(name="🧬 Raza", value=character.race, inline=True)
         embed.add_field(name="🛡️ Clase Primaria", value=character.primary_class, inline=True)
         embed.add_field(name="🗡️ Clase Secundaria", value=character.secondary_class, inline=True)
         embed.add_field(name="✨ Clase Primordial", value=character.primordial_class, inline=True)
@@ -58,6 +60,14 @@ class CharacterCreation(commands.Cog):
         embed.set_footer(text="🌟 ¡Continúa tu aventura y mejora tus habilidades!")
         await interaction.response.send_message(embed=embed)
 
+    @app_commands.command(name="eliminar_personaje", description="🗑️ Elimina tu personaje actual")
+    async def eliminar_personaje(self, interaction: discord.Interaction):
+        success, message = delete_character(interaction.user.id)
+        if success:
+            await interaction.response.send_message("✅ " + message, ephemeral=True)
+        else:
+            await interaction.response.send_message("❌ " + message, ephemeral=True)
+
 class NameInput(discord.ui.View):
     def __init__(self):
         super().__init__()
@@ -69,8 +79,8 @@ class NameInput(discord.ui.View):
         await interaction.response.send_modal(NameModal(self))
 
     async def on_name_set(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="🌟 Creación de Personaje", description=f"Nombre: **{self.name} {self.surname}**\n\nAhora, elige el género de tu personaje.", color=discord.Color.green())
-        await interaction.response.edit_message(embed=embed, view=GenderSelection(self.name, self.surname))
+        embed = discord.Embed(title="🌟 Creación de Personaje", description=f"Nombre: **{self.name} {self.surname}**\n\nAhora, elige la raza de tu personaje.", color=discord.Color.green())
+        await interaction.response.edit_message(embed=embed, view=RaceSelection(self.name, self.surname))
 
 class NameModal(discord.ui.Modal, title="📝 Ingresa el nombre de tu personaje"):
     name_input = discord.ui.TextInput(label="Nombre")
@@ -85,11 +95,27 @@ class NameModal(discord.ui.Modal, title="📝 Ingresa el nombre de tu personaje"
         self.original_view.surname = self.surname_input.value
         await self.original_view.on_name_set(interaction)
 
-class GenderSelection(discord.ui.View):
+class RaceSelection(discord.ui.View):
     def __init__(self, name, surname):
         super().__init__()
         self.name = name
         self.surname = surname
+        options = [discord.SelectOption(label=race.value, value=race.name, description=get_race_description(race)[:100]) for race in Race]
+        select_menu = discord.ui.Select(placeholder="🧬 Elige tu raza", options=options)
+        select_menu.callback = self.race_callback
+        self.add_item(select_menu)
+
+    async def race_callback(self, interaction: discord.Interaction):
+        race = Race[interaction.data['values'][0]]
+        embed = discord.Embed(title="🌟 Creación de Personaje", description=f"Nombre: **{self.name} {self.surname}**\nRaza: **{race.value}**\n\nAhora, elige el género de tu personaje.", color=discord.Color.green())
+        await interaction.response.edit_message(embed=embed, view=GenderSelection(self.name, self.surname, race))
+
+class GenderSelection(discord.ui.View):
+    def __init__(self, name, surname, race):
+        super().__init__()
+        self.name = name
+        self.surname = surname
+        self.race = race
 
     @discord.ui.button(label="♂️ Masculino", style=discord.ButtonStyle.primary)
     async def select_male(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -104,14 +130,15 @@ class GenderSelection(discord.ui.View):
         await self.gender_selected(interaction, "No binario")
 
     async def gender_selected(self, interaction: discord.Interaction, gender):
-        embed = discord.Embed(title="🌟 Creación de Personaje", description=f"Nombre: **{self.name} {self.surname}**\nGénero: **{gender}**\n\nAhora, elige tu clase primaria.", color=discord.Color.green())
-        await interaction.response.edit_message(embed=embed, view=ClassSelection(self.name, self.surname, gender))
+        embed = discord.Embed(title="🌟 Creación de Personaje", description=f"Nombre: **{self.name} {self.surname}**\nRaza: **{self.race.value}**\nGénero: **{gender}**\n\nAhora, elige tu clase primaria.", color=discord.Color.green())
+        await interaction.response.edit_message(embed=embed, view=ClassSelection(self.name, self.surname, self.race, gender))
 
 class ClassSelection(discord.ui.View):
-    def __init__(self, name, surname, gender):
+    def __init__(self, name, surname, race, gender):
         super().__init__()
         self.name = name
         self.surname = surname
+        self.race = race
         self.gender = gender
         self.primary_class = None
         self.secondary_class = None
@@ -128,22 +155,23 @@ class ClassSelection(discord.ui.View):
         selected_class = interaction.data['values'][0]
         if not self.primary_class:
             self.primary_class = selected_class
-            embed = discord.Embed(title="🌟 Creación de Personaje", description=f"Nombre: **{self.name} {self.surname}**\nGénero: **{self.gender}**\nClase Primaria: **{self.primary_class}**\n\nAhora, elige tu clase secundaria.", color=discord.Color.green())
+            embed = discord.Embed(title="🌟 Creación de Personaje", description=f"Nombre: **{self.name} {self.surname}**\nRaza: **{self.race.value}**\nGénero: **{self.gender}**\nClase Primaria: **{self.primary_class}**\n\nAhora, elige tu clase secundaria.", color=discord.Color.green())
             await interaction.response.edit_message(embed=embed, view=self)
             self.update_options()
         elif selected_class != self.primary_class:
             self.secondary_class = selected_class
             primordial_options = get_primordial_class(self.primary_class, self.secondary_class)
-            embed = discord.Embed(title="🌟 Creación de Personaje", description=f"Nombre: **{self.name} {self.surname}**\nGénero: **{self.gender}**\nClase Primaria: **{self.primary_class}**\nClase Secundaria: **{self.secondary_class}**\n\nElige tu clase primordial:", color=discord.Color.green())
-            await interaction.response.edit_message(embed=embed, view=PrimordialSelection(self.name, self.surname, self.gender, self.primary_class, self.secondary_class, primordial_options))
+            embed = discord.Embed(title="🌟 Creación de Personaje", description=f"Nombre: **{self.name} {self.surname}**\nRaza: **{self.race.value}**\nGénero: **{self.gender}**\nClase Primaria: **{self.primary_class}**\nClase Secundaria: **{self.secondary_class}**\n\nElige tu clase primordial:", color=discord.Color.green())
+            await interaction.response.edit_message(embed=embed, view=PrimordialSelection(self.name, self.surname, self.race, self.gender, self.primary_class, self.secondary_class, primordial_options))
         else:
             await interaction.response.send_message("No puedes elegir la misma clase como primaria y secundaria. Por favor, elige una clase diferente.", ephemeral=True)
 
 class PrimordialSelection(discord.ui.View):
-    def __init__(self, name, surname, gender, primary_class, secondary_class, primordial_options):
+    def __init__(self, name, surname, race, gender, primary_class, secondary_class, primordial_options):
         super().__init__()
         self.name = name
         self.surname = surname
+        self.race = race
         self.gender = gender
         self.primary_class = primary_class
         self.secondary_class = secondary_class
@@ -154,14 +182,15 @@ class PrimordialSelection(discord.ui.View):
 
     async def primordial_callback(self, interaction: discord.Interaction):
         primordial_class = interaction.data['values'][0]
-        embed = discord.Embed(title="🌟 Creación de Personaje", description=f"Nombre: **{self.name} {self.surname}**\nGénero: **{self.gender}**\nClase Primaria: **{self.primary_class}**\nClase Secundaria: **{self.secondary_class}**\nClase Primordial: **{primordial_class}**\n\nPor último, elige tu profesión:", color=discord.Color.green())
-        await interaction.response.edit_message(embed=embed, view=ProfessionSelection(self.name, self.surname, self.gender, self.primary_class, self.secondary_class, primordial_class))
+        embed = discord.Embed(title="🌟 Creación de Personaje", description=f"Nombre: **{self.name} {self.surname}**\nRaza: **{self.race.value}**\nGénero: **{self.gender}**\nClase Primaria: **{self.primary_class}**\nClase Secundaria: **{self.secondary_class}**\nClase Primordial: **{primordial_class}**\n\nPor último, elige tu profesión:", color=discord.Color.green())
+        await interaction.response.edit_message(embed=embed, view=ProfessionSelection(self.name, self.surname, self.race, self.gender, self.primary_class, self.secondary_class, primordial_class))
 
 class ProfessionSelection(discord.ui.View):
-    def __init__(self, name, surname, gender, primary_class, secondary_class, primordial_class):
+    def __init__(self, name, surname, race, gender, primary_class, secondary_class, primordial_class):
         super().__init__()
         self.name = name
         self.surname = surname
+        self.race = race
         self.gender = gender
         self.primary_class = primary_class
         self.secondary_class = secondary_class
@@ -179,6 +208,7 @@ class ProfessionSelection(discord.ui.View):
             user_id=str(interaction.user.id),
             name=self.name,
             surname=self.surname,
+            race=self.race.name,
             gender=self.gender,
             primary_class=self.primary_class,
             secondary_class=self.secondary_class,
@@ -193,6 +223,7 @@ class ProfessionSelection(discord.ui.View):
 
         embed = discord.Embed(title="🎉 ¡Personaje Creado!", description="Tu aventura comienza ahora. ¡Buena suerte, héroe!", color=discord.Color.gold())
         embed.add_field(name="👤 Nombre", value=f"{self.name} {self.surname}", inline=False)
+        embed.add_field(name="🧬 Raza", value=self.race.value, inline=True)
         embed.add_field(name="👥 Género", value=self.gender, inline=True)
         embed.add_field(name="🛡️ Clase Primaria", value=self.primary_class, inline=True)
         embed.add_field(name="🗡️ Clase Secundaria", value=self.secondary_class, inline=True)

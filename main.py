@@ -5,9 +5,11 @@ from src.core.status import set_bot_status
 from src.bot.bot import DiscordBot
 from src.utils.logger import bot_logger, debug, info, success, warning, error, critical
 from src.core.monitor import setup as setup_monitor
+from src.tatiana.groq_interface import TatianaInterface
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 bot = DiscordBot(intents=intents)
 
 @bot.event

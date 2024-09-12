@@ -118,7 +118,8 @@ class Character(Base):
     user_id = Column(String, unique=True)
     name = Column(String)
     surname = Column(String)
-    gender = Column(String)  
+    gender = Column(String)
+    race = Column(String)  # Nuevo campo para la raza
     primary_class = Column(String)
     secondary_class = Column(String)
     primordial_class = Column(String)
@@ -342,6 +343,62 @@ def remove_song_from_queue(guild_id):
 def clear_guild_queue(guild_id):
     session.query(SongQueue).filter_by(guild_id=guild_id).delete()
     session.commit()
+
+def create_character(user_id, name, surname, gender, race, primary_class, secondary_class, primordial_class, profession):
+    try:
+        character = Character(
+            user_id=str(user_id),
+            name=name,
+            surname=surname,
+            gender=gender,
+            race=race,
+            primary_class=primary_class,
+            secondary_class=secondary_class,
+            primordial_class=primordial_class,
+            profession=profession,
+            level=1,
+            experience=0,
+            health=100,
+            mana=100,
+            strength=10,
+            intelligence=10,
+            dexterity=10,
+            wisdom=10,
+            charisma=10,
+            constitution=10
+        )
+        session.add(character)
+        session.commit()
+        return character
+    except Exception as e:
+        session.rollback()
+        raise e
+
+def get_character(user_id):
+    return session.query(Character).filter_by(user_id=str(user_id)).first()
+
+def update_character(user_id, **kwargs):
+    character = get_character(user_id)
+    if character:
+        for key, value in kwargs.items():
+            if hasattr(character, key):
+                setattr(character, key, value)
+        session.commit()
+    return character
+
+def delete_character(user_id):
+    try:
+        character = session.query(Character).filter_by(user_id=str(user_id)).first()
+        if character:
+            session.delete(character)
+            session.commit()
+            return True, "Personaje eliminado con éxito."
+        else:
+            return False, "No se encontró un personaje para este usuario."
+    except Exception as e:
+        session.rollback()
+        error_message = f"Error al eliminar el personaje: {str(e)}"
+        return False, error_message
 
 create_tables()
 

@@ -6,14 +6,15 @@ load_dotenv()
 
 class Settings:
     # Versión
-    VERSION = "1.2.0"
-    CHANGELOG = "Cambios en el almacenamiento de datos y mejoras de la base de datos"
+    VERSION = "1.3.0"
+    CHANGELOG = "Agregado personalizadad y cambio menores en la ia"
 
     # Variables secretas
     DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
     GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
     CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
-
+    GROQ_API_KEY = os.getenv('GROQ_API_KEY')
+    
     # Spotify API Credentials
     SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
     SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')

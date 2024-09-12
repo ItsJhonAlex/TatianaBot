@@ -1,0 +1,227 @@
+{
+  "nombre_mundo": "Aethoria",
+  "descripcion": "Un mundo mágico donde la tecnología y la magia coexisten en un delicado equilibrio.",
+  "eras": [
+    {
+      "nombre": "Era del Despertar",
+      "inicio": 0,
+      "fin": 500,
+      "descripcion": "La época en que la magia emergió por primera vez en Aethoria, cambiando para siempre el curso de la historia."
+    },
+    {
+      "nombre": "Era de la Fundación",
+      "inicio": 501,
+      "fin": 1000,
+      "descripcion": "Periodo en el que se establecieron los primeros reinos y se forjaron las alianzas fundamentales entre las razas."
+    },
+    {
+      "nombre": "Era de los Conflictos",
+      "inicio": 1001,
+      "fin": 1500,
+      "descripcion": "Tiempos turbulentos marcados por guerras entre reinos y el surgimiento de poderosos hechiceros oscuros."
+    },
+    {
+      "nombre": "Era de la Iluminación",
+      "inicio": 1501,
+      "fin": 2000,
+      "descripcion": "Una época de grandes descubrimientos mágicos y tecnológicos que llevaron a un renacimiento cultural."
+    },
+    {
+      "nombre": "Era Actual",
+      "inicio": 2001,
+      "fin": "presente",
+      "descripcion": "La era en la que se desarrolla la aventura principal, donde la magia y la tecnología han alcanzado nuevas alturas."
+    }
+  ],
+  "eventos_importantes": [
+    {
+      "nombre": "El Gran Despertar",
+      "año": 1,
+      "descripcion": "El día en que la magia se manifestó por primera vez en Aethoria, otorgando poderes a individuos de todas las razas."
+    },
+    {
+      "nombre": "La Fundación de Lumina",
+      "año": 523,
+      "descripcion": "La creación de la primera gran ciudad-estado mágica, que se convertiría en el centro del conocimiento arcano."
+    },
+    {
+      "nombre": "La Guerra de las Sombras",
+      "año": 1250,
+      "descripcion": "Un conflicto devastador que enfrentó a los reinos contra una alianza de hechiceros oscuros."
+    },
+    {
+      "nombre": "El Descubrimiento del Aether",
+      "año": 1789,
+      "descripcion": "El hallazgo de una fuente de energía mágica que revolucionó la tecnología y la sociedad."
+    },
+    {
+      "nombre": "La Gran Convergencia",
+      "año": 2022,
+      "descripcion": "Un evento cósmico que aumentó dramáticamente el poder mágico en todo Aethoria, desencadenando nuevos desafíos y oportunidades."
+    }
+  ],
+  "personajes_legendarios": [
+    {
+      "nombre": "Elara la Iluminada",
+      "descripcion": "La primera Archimaga de Lumina, cuyas enseñanzas sentaron las bases de la magia moderna.",
+      "era": "Era de la Fundación"
+    },
+    {
+      "nombre": "Thorne el Conquistador",
+      "descripcion": "Un poderoso guerrero que unificó los reinos del norte y estableció la primera dinastía duradera.",
+      "era": "Era de los Conflictos"
+    },
+    {
+      "nombre": "Zephyr el Inventor",
+      "descripcion": "Un genio que combinó magia y tecnología para crear los primeros autómatas mágicos.",
+      "era": "Era de la Iluminación"
+    },
+    {
+      "nombre": "Lyra la Vidente",
+      "descripcion": "Una profetisa cuyas visiones han guiado a los líderes de Aethoria durante siglos.",
+      "era": "Era Actual"
+    }
+  ],
+  "razas": [
+    {
+      "nombre": "Humanos",
+      "descripcion": "Versátiles y ambiciosos, los humanos han prosperado en Aethoria gracias a su adaptabilidad."
+    },
+    {
+      "nombre": "Elfos",
+      "descripcion": "Guardianes ancestrales de los bosques, poseen una afinidad natural con la magia de la naturaleza."
+    },
+    {
+      "nombre": "Enanos",
+      "descripcion": "Maestros artesanos y mineros, han perfeccionado la fusión de magia y tecnología en sus creaciones."
+    },
+    {
+      "nombre": "Draconidos",
+      "descripcion": "Descendientes de dragones, poseen un dominio innato sobre los elementos y una fuerza formidable."
+    },
+    {
+      "nombre": "Silfos",
+      "descripcion": "Seres etéreos nacidos de la unión entre el viento y la magia, expertos en las artes arcanas."
+    },
+    {
+      "nombre": "Orcos",
+      "descripcion": "Guerreros feroces con una conexión profunda con la tierra y una cultura rica en tradiciones."
+    },
+    {
+      "nombre": "Fae",
+      "descripcion": "Criaturas mágicas del reino feérico, conocidas por su astucia y habilidades ilusorias."
+    },
+    {
+      "nombre": "Autómatas",
+      "descripcion": "Seres artificiales creados por la fusión de magia y tecnología, en busca de su lugar en el mundo."
+    },
+    {
+      "nombre": "Cambiaformas",
+      "descripcion": "Individuos capaces de alterar su forma física, adaptándose a diversos entornos y situaciones."
+    },
+    {
+      "nombre": "Elementales",
+      "descripcion": "Manifestaciones vivientes de los elementos primordiales, con poderes sobre la naturaleza misma."
+    }
+  ],
+  "lugares_importantes": [
+    {
+      "nombre": "Lumina",
+      "descripcion": "La ciudad de la luz eterna, centro del conocimiento mágico y sede de la Academia Arcana."
+    },
+    {
+      "nombre": "Las Profundidades de Ironhold",
+      "descripcion": "Una vasta red de ciudades subterráneas enanas, famosa por sus forjas mágicas."
+    },
+    {
+      "nombre": "El Bosque Susurrante",
+      "descripcion": "Un antiguo bosque élfico donde los árboles hablan y guardan secretos milenarios."
+    },
+    {
+      "nombre": "La Ciudadela Flotante de Aetherpolis",
+      "descripcion": "Una maravilla tecnomágica que flota sobre las nubes, hogar de los inventores más brillantes."
+    },
+    {
+      "nombre": "El Abismo de Sombras",
+      "descripcion": "Una grieta dimensional de donde emanan criaturas oscuras y magia corrupta."
+    }
+  ],
+  "sistemas_magicos": [
+    {
+      "nombre": "Arcanismo",
+      "descripcion": "La práctica de canalizar energía mágica pura a través de fórmulas y gestos precisos."
+    },
+    {
+      "nombre": "Tecnomancia",
+      "descripcion": "La fusión de magia y tecnología para crear dispositivos y máquinas de gran poder."
+    },
+    {
+      "nombre": "Druidismo",
+      "descripcion": "La comunión con las fuerzas de la naturaleza para invocar sus poderes."
+    },
+    {
+      "nombre": "Runecrafting",
+      "descripcion": "El arte de inscribir runas mágicas para crear efectos duraderos y poderosos."
+    }
+  ],
+  "facciones": [
+    {
+      "nombre": "La Orden del Crisol",
+      "descripcion": "Una organización dedicada a mantener el equilibrio entre magia y tecnología."
+    },
+    {
+      "nombre": "El Gremio de los Inventores",
+      "descripcion": "Un grupo de brillantes mentes que impulsan el avance tecnológico en Aethoria."
+    },
+    {
+      "nombre": "Los Guardianes del Bosque",
+      "descripcion": "Protectores de la naturaleza, liderados principalmente por elfos y druidas."
+    },
+    {
+      "nombre": "La Hermandad de las Sombras",
+      "descripcion": "Una red clandestina de espías y asesinos que operan en las sombras de la sociedad."
+    }
+  ],
+  "leyendas": [
+    {
+      "nombre": "El Árbol del Mundo",
+      "descripcion": "Se dice que en el centro de Aethoria crece un árbol colosal que conecta todos los planos de existencia."
+    },
+    {
+      "nombre": "La Forja de los Dioses",
+      "descripcion": "Una legendaria forja donde se crearon las armas más poderosas de la historia."
+    },
+    {
+      "nombre": "El Último Dragón",
+      "descripcion": "La creencia de que un dragón ancestral duerme bajo la tierra, esperando el momento de despertar."
+    }
+  ],
+  "criaturas": [
+    {
+      "nombre": "Quimeras Aetheriales",
+      "descripcion": "Bestias mágicas creadas por la fusión de múltiples criaturas y energía aethérica."
+    },
+    {
+      "nombre": "Golems de Cristal",
+      "descripcion": "Guardianes cristalinos que protegen lugares sagrados y almacenan conocimiento ancestral."
+    },
+    {
+      "nombre": "Leviatanes de las Nubes",
+      "descripcion": "Enormes criaturas que nadan a través del cielo, a veces usadas como medio de transporte."
+    }
+  ],
+  "artefactos": [
+    {
+      "nombre": "La Corona de las Estrellas",
+      "descripcion": "Una diadema que otorga a su portador la habilidad de ver el futuro en las constelaciones."
+    },
+    {
+      "nombre": "El Corazón de Aethoria",
+      "descripcion": "Un cristal pulsante que se dice es la fuente de toda la magia en el mundo."
+    },
+    {
+      "nombre": "La Espada del Equilibrio",
+      "descripcion": "Una espada legendaria que puede cortar a través de la realidad misma, manteniendo el balance entre los mundos."
+    }
+  ]
+}
