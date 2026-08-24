@@ -47,6 +47,7 @@ Thumbs.db
 # Archivos de configuración local
 config.ini
 settings.json
+legacy/
 
 # Archivos de caché de pytest
 .pytest_cache/
