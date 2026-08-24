@@ -1,3 +1,11 @@
+# Node.js / TypeScript
+node_modules/
+dist/
+*.tsbuildinfo
+.turbo/
+coverage/
+.npm/
+
 # Entorno virtual
 venv/
 env/
@@ -32,6 +40,7 @@ lib64/
 *.db
 *.sqlite3
 *.sqlite
+data/
 
 # Archivos del sistema operativo
 .DS_Store
