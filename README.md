@@ -26,7 +26,7 @@ Tatiana es un bot de Discord con personalidad propia, ambientado en el mundo de 
 
 ## ✨ Características
 
-### Disponibles (v2.3.0 — Fase 3)
+### Disponibles (v2.4.0 — Fase 4)
 
 - 🏓 `/ping` — latencia
 - 💡 `/help` — lista de comandos
@@ -39,14 +39,19 @@ Tatiana es un bot de Discord con personalidad propia, ambientado en el mundo de 
 - 📊 `/poll` — encuestas con reacciones
 - 🐾 `/pokemon`, `/pokedex` — captura Gen 1 (PokeAPI)
 - 🃏 `/yugioh`, `/deck` — cartas Yu-Gi-Oh! (YGOProDeck)
+- 🔧 `/automod` — moderación custom (+ tip Discord AutoMod nativo)
+- 🖼️ `/embed` — CRUD de embeds guardados
+- 🗡️ `/adventure`, `/character`, `/character-delete` — ficha RPG
+- 📚 `/lore` — lore de Aethoria
 - 🗄️ Persistencia SQLite (`bun:sqlite` + Drizzle)
 
 ### En roadmap
 
 | Fase | Features |
 |---|---|
-| 4 | Automod, embeds, RPG (ficha) |
+| 4b | Gameplay RPG (si se decide) |
 | 5 | Música (Lavalink, opcional) |
+| 6 | Pulido / migración |
 
 Ver [docs/roadmap.md](docs/roadmap.md) para el plan completo.
 

@@ -9,6 +9,11 @@ import type { CatchGameService } from '../domain/catch-games/catch-game.service.
 import type { PokemonService } from '../domain/catch-games/pokemon.service.js';
 import type { YugiohService } from '../domain/catch-games/yugioh.service.js';
 import type { CatchSpawnRegistry } from '../domain/catch-games/catch-spawn.registry.js';
+import type { AutomodService } from '../domain/moderation/automod.service.js';
+import type { EmbedService } from '../domain/embeds/embed.service.js';
+import type { CharacterService } from '../domain/rpg/character.service.js';
+import type { LoreService } from '../domain/rpg/lore.service.js';
+import type { AdventureSessionRegistry } from '../domain/rpg/adventure-session.registry.js';
 import type { StatusService } from '../core/status.service.js';
 import type { Database } from '../infrastructure/db/client.js';
 import type { RateLimiter } from './rate-limiter.js';
@@ -29,6 +34,11 @@ declare module '@sapphire/pieces' {
     pokemonService: PokemonService;
     yugiohService: YugiohService;
     catchSpawnRegistry: CatchSpawnRegistry;
+    automodService: AutomodService;
+    embedService: EmbedService;
+    characterService: CharacterService;
+    loreService: LoreService;
+    adventureSessionRegistry: AdventureSessionRegistry;
     rateLimiter: RateLimiter;
   }
 }
@@ -47,6 +57,11 @@ export interface AppContainerServices {
   pokemonService: PokemonService;
   yugiohService: YugiohService;
   catchSpawnRegistry: CatchSpawnRegistry;
+  automodService: AutomodService;
+  embedService: EmbedService;
+  characterService: CharacterService;
+  loreService: LoreService;
+  adventureSessionRegistry: AdventureSessionRegistry;
   rateLimiter: RateLimiter;
 }
 
@@ -64,5 +79,10 @@ export function registerContainerServices(services: AppContainerServices): void 
   container.pokemonService = services.pokemonService;
   container.yugiohService = services.yugiohService;
   container.catchSpawnRegistry = services.catchSpawnRegistry;
+  container.automodService = services.automodService;
+  container.embedService = services.embedService;
+  container.characterService = services.characterService;
+  container.loreService = services.loreService;
+  container.adventureSessionRegistry = services.adventureSessionRegistry;
   container.rateLimiter = services.rateLimiter;
 }

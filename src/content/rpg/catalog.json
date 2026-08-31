@@ -1,0 +1,114 @@
+{
+  "races": [
+    {
+      "id": "HUMAN",
+      "name": "Human",
+      "description": "Versatile and ambitious; thrives through adaptability.",
+      "bonuses": { "constitution": 1, "charisma": 1 }
+    },
+    {
+      "id": "ELF",
+      "name": "Elf",
+      "description": "Ancient forest guardians with a natural affinity for nature magic.",
+      "bonuses": { "dexterity": 2, "wisdom": 1 }
+    },
+    {
+      "id": "DWARF",
+      "name": "Dwarf",
+      "description": "Master artisans who fuse magic and technology in their crafts.",
+      "bonuses": { "constitution": 2, "strength": 1 }
+    },
+    {
+      "id": "DRACONID",
+      "name": "Draconid",
+      "description": "Dragon descendants with elemental power and formidable strength.",
+      "bonuses": { "strength": 2, "constitution": 1 }
+    },
+    {
+      "id": "SYLPH",
+      "name": "Sylph",
+      "description": "Ethereal beings born of wind and magic; experts in the arcane arts.",
+      "bonuses": { "intelligence": 2, "mana": 10 }
+    },
+    {
+      "id": "ORC",
+      "name": "Orc",
+      "description": "Fierce warriors with a deep bond to the land and rich traditions.",
+      "bonuses": { "strength": 2, "health": 15 }
+    },
+    {
+      "id": "FAE",
+      "name": "Fae",
+      "description": "Magical faerie folk known for cunning and illusion.",
+      "bonuses": { "charisma": 2, "intelligence": 1 }
+    },
+    {
+      "id": "AUTOMATON",
+      "name": "Automaton",
+      "description": "Constructs of magic and technology seeking their place in the world.",
+      "bonuses": { "constitution": 2, "intelligence": 1 }
+    },
+    {
+      "id": "SHAPESHIFTER",
+      "name": "Shapeshifter",
+      "description": "Beings who alter their form to adapt to any environment.",
+      "bonuses": { "dexterity": 2, "constitution": 1 }
+    },
+    {
+      "id": "ELEMENTAL",
+      "name": "Elemental",
+      "description": "Living manifestations of the primordial elements.",
+      "bonuses": { "intelligence": 2, "wisdom": 1, "mana": 10 }
+    }
+  ],
+  "classes": [
+    "Warrior",
+    "Mage",
+    "Priest",
+    "Rogue",
+    "Archer",
+    "Druid",
+    "Barbarian",
+    "Monk",
+    "Sorcerer",
+    "Bard"
+  ],
+  "classModifiers": {
+    "Warrior": { "strength": 3, "constitution": 2, "health": 20 },
+    "Mage": { "intelligence": 3, "wisdom": 2, "mana": 20 },
+    "Priest": { "wisdom": 3, "charisma": 2, "mana": 15 },
+    "Rogue": { "dexterity": 3, "charisma": 2 },
+    "Archer": { "dexterity": 3, "strength": 2 },
+    "Druid": { "wisdom": 3, "constitution": 2 },
+    "Barbarian": { "strength": 3, "constitution": 3, "health": 30 },
+    "Monk": { "dexterity": 3, "wisdom": 2 },
+    "Sorcerer": { "charisma": 3, "intelligence": 2, "mana": 15 },
+    "Bard": { "charisma": 3, "dexterity": 2 }
+  },
+  "professions": [
+    "Blacksmith",
+    "Alchemist",
+    "Miner",
+    "Hunter",
+    "Fisher",
+    "Cook",
+    "Carpenter",
+    "Tailor",
+    "Jeweler",
+    "Farmer"
+  ],
+  "professionModifiers": {
+    "Blacksmith": { "strength": 2, "constitution": 1 },
+    "Alchemist": { "intelligence": 2, "dexterity": 1 },
+    "Miner": { "strength": 2, "constitution": 2 },
+    "Hunter": { "dexterity": 2, "wisdom": 1 },
+    "Fisher": { "dexterity": 1, "wisdom": 2 },
+    "Cook": { "constitution": 2, "charisma": 1 },
+    "Carpenter": { "strength": 1, "dexterity": 2 },
+    "Tailor": { "dexterity": 2, "charisma": 1 },
+    "Jeweler": { "dexterity": 2, "intelligence": 1 },
+    "Farmer": { "constitution": 2, "strength": 1 }
+  },
+  "genders": ["Male", "Female", "Non-binary"],
+  "primordialDefaults": ["Versatile Adventurer", "Mixed Specialist", "Multifaceted Prodigy"]
+}

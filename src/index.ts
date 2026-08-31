@@ -15,6 +15,13 @@ import { HttpClient } from './infrastructure/http/http-client.js';
 import { CatchAttemptRepository } from './infrastructure/db/repositories/catch-attempt.repository.js';
 import { PokemonRepository } from './infrastructure/db/repositories/pokemon.repository.js';
 import { YugiohRepository } from './infrastructure/db/repositories/yugioh.repository.js';
+import {
+  AutomodRuleRepository,
+  GuildSettingsRepository,
+  ModActionRepository,
+} from './infrastructure/db/repositories/moderation.repository.js';
+import { EmbedRepository } from './infrastructure/db/repositories/embed.repository.js';
+import { CharacterRepository } from './infrastructure/db/repositories/character.repository.js';
 import { EconomyService } from './domain/economy/economy.service.js';
 import { MemoryService } from './domain/chat/memory.service.js';
 import { ChatService } from './domain/chat/chat.service.js';
@@ -26,6 +33,11 @@ import { CatchGameService } from './domain/catch-games/catch-game.service.js';
 import { PokemonService } from './domain/catch-games/pokemon.service.js';
 import { YugiohService } from './domain/catch-games/yugioh.service.js';
 import { CatchSpawnRegistry } from './domain/catch-games/catch-spawn.registry.js';
+import { AutomodService } from './domain/moderation/automod.service.js';
+import { EmbedService } from './domain/embeds/embed.service.js';
+import { CharacterService } from './domain/rpg/character.service.js';
+import { LoreService } from './domain/rpg/lore.service.js';
+import { AdventureSessionRegistry } from './domain/rpg/adventure-session.registry.js';
 import { GroqProvider } from './infrastructure/llm/groq-provider.js';
 import { StatusService } from './core/status.service.js';
 
@@ -53,6 +65,11 @@ async function main() {
   const catchAttemptRepository = new CatchAttemptRepository(db);
   const pokemonRepository = new PokemonRepository(db);
   const yugiohRepository = new YugiohRepository(db);
+  const guildSettingsRepository = new GuildSettingsRepository(db);
+  const automodRuleRepository = new AutomodRuleRepository(db);
+  const modActionRepository = new ModActionRepository(db);
+  const embedRepository = new EmbedRepository(db);
+  const characterRepository = new CharacterRepository(db);
   const httpClient = new HttpClient();
   const rateLimiter = new RateLimiter();
 
@@ -71,6 +88,15 @@ async function main() {
   const pokemonService = new PokemonService(httpClient, pokemonRepository, userRepository);
   const yugiohService = new YugiohService(httpClient, yugiohRepository, userRepository);
   const catchSpawnRegistry = new CatchSpawnRegistry();
+  const automodService = new AutomodService(
+    guildSettingsRepository,
+    automodRuleRepository,
+    modActionRepository,
+  );
+  const embedService = new EmbedService(embedRepository);
+  const characterService = new CharacterService(characterRepository);
+  const loreService = new LoreService();
+  const adventureSessionRegistry = new AdventureSessionRegistry();
 
   registerContainerServices({
     db,
@@ -86,6 +112,11 @@ async function main() {
     pokemonService,
     yugiohService,
     catchSpawnRegistry,
+    automodService,
+    embedService,
+    characterService,
+    loreService,
+    adventureSessionRegistry,
     rateLimiter,
   });
 

@@ -139,20 +139,20 @@ Esqueleto   MVP       Social    Catch       Mod/RPG     Música
 ### Entregables
 
 #### Moderación
-- [ ] Preferir Discord AutoMod nativo donde aplique
-- [ ] Custom: log channel, reglas words/spam/links, acciones auditables
-- [ ] Comandos admin con precondiciones de rol
+- [x] Preferir Discord AutoMod nativo donde aplique
+- [x] Custom: log channel, reglas words/spam/links, acciones auditables
+- [x] Comandos admin con precondiciones de rol
 
 #### Embeds
-- [ ] CRUD embeds: crear, listar, editar, publicar, preview
-- [ ] Persistencia en DB
+- [x] CRUD embeds: crear, listar, editar, publicar, preview
+- [x] Persistencia en DB
 
 #### RPG (shell)
-- [ ] `/aventura` — creación con modals/selects (port UX legacy)
-- [ ] `/personaje` — perfil
-- [ ] `/eliminar_personaje`
-- [ ] Razas conectadas a stats reales (bonus aplicados)
-- [ ] `/lore` — consulta lore de Aethoria
+- [x] `/adventure` — creación con modals/selects (port UX legacy)
+- [x] `/character` — perfil
+- [x] `/character-delete`
+- [x] Razas conectadas a stats reales (bonus aplicados)
+- [x] `/lore` — consulta lore de Aethoria
 
 ### Criterios de aceptación
 
@@ -247,4 +247,4 @@ Una tarea/feature está **done** cuando:
 
 ## Próximo paso inmediato
 
-**Ejecutar Fase 4:** moderación, embeds CRUD y shell RPG según [desarrollo.md](./desarrollo.md).
+**Decidir gameplay RPG (Fase 4b) o pasar a Fase 5 (música opcional) / Fase 6 (pulido).**

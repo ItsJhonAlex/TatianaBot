@@ -7,6 +7,19 @@ Versionado según [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.4.0] — 2026-08-31
+
+### Añadido
+
+- Moderación: `/automod` (enable/disable/status/rules/log/roles/spam) + listener asíncrono
+- Precondición `ModeratorOnly` (Manage Server o roles configurados)
+- Embeds CRUD: `/embed create|list|preview|publish|edit|delete`
+- RPG shell: `/adventure`, `/character`, `/character-delete`, `/lore`
+- Stats con bonuses de raza aplicados y visibles
+- Tablas DB: guild settings, automod rules, mod actions, saved embeds, characters
+
+---
+
 ## [2.3.0] — 2026-08-31
 
 ### Añadido
