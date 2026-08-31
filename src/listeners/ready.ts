@@ -1,5 +1,5 @@
 import { Listener } from '@sapphire/framework';
-import { Events } from 'discord.js';
+import { ActivityType, Events } from 'discord.js';
 import { bot } from '../config/bot.js';
 
 export class ReadyListener extends Listener {
@@ -11,7 +11,7 @@ export class ReadyListener extends Listener {
     });
   }
 
-  public override run() {
+  public override async run() {
     const user = this.container.client.user;
     if (!user) {
       return;
@@ -22,5 +22,20 @@ export class ReadyListener extends Listener {
       { username, id, version: bot.version },
       `${bot.name} v${bot.version} conectado como ${username}`,
     );
+
+    const clientUser = this.container.client.user;
+    if (!clientUser) {
+      return;
+    }
+
+    clientUser.setPresence({
+      activities: [{ name: 'Siendo Tatiana', type: ActivityType.Playing }],
+      status: 'online',
+    });
+
+    const statusChannelId = this.container.env.STATUS_CHANNEL_ID;
+    if (statusChannelId) {
+      await this.container.statusService.publishOnline(this.container.client, statusChannelId);
+    }
   }
 }

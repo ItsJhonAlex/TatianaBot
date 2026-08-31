@@ -7,6 +7,26 @@ Versionado según [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.1.0] — 2026-08-31
+
+### Añadido
+
+- Chat IA con Groq (`GroqProvider`) y personalidad desde `src/content/persona.toml`
+- Memoria de conversación por `(guildId, userId)` en SQLite
+- Listener de mención/reply para hablar con Tatiana
+- Economía: `/balance`, `/daily`, `/transfer`
+- `/help` dinámico
+- Admin owner: `/shutdown`, `/restart` (precondición `OwnerOnly`)
+- Status embed opcional (`STATUS_CHANNEL_ID`)
+- Lore de Aethoria en `src/content/lore/aethoria.json`
+- Tests de economía, chat/memoria
+
+### Cambiado
+
+- Intents: `GuildMessages` + `MessageContent` para el chat por mención
+
+---
+
 ## [2.0.0] — 2026-08-24
 
 Rewrite completo del bot en **TypeScript + Sapphire**. El código Python v1 se archiva en `legacy/`.

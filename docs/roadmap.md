@@ -53,15 +53,15 @@ Esqueleto   MVP       Social    Catch       Mod/RPG     Música
 
 ### Entregables
 
-- [ ] Content pack: `persona.toml` + migración de lore desde legacy
-- [ ] `LLMProvider` + `GroqProvider` con streaming
-- [ ] Memoria por `(guildId, userId)` con límite de tokens
-- [ ] Listener: mención y reply → respuesta IA
-- [ ] `/ayuda` dinámico (Sapphire help o custom)
-- [ ] Economía: `/saldo`, `/diario`, `/transferir`
-- [ ] Status embed en canal configurado (opcional)
-- [ ] Owner: `/apagar`, `/reiniciar` con precondición `OwnerOnly`
-- [ ] Tests: economía, LLM mock, memoria
+- [x] Content pack: `persona.toml` + migración de lore desde legacy
+- [x] `LLMProvider` + `GroqProvider` con streaming
+- [x] Memoria por `(guildId, userId)` con límite de tokens
+- [x] Listener: mención y reply → respuesta IA
+- [x] `/help` dynamic (Sapphire help or custom)
+- [x] Economy: `/balance`, `/daily`, `/transfer`
+- [x] Status embed in configured channel (optional)
+- [x] Owner: `/shutdown`, `/restart` with `OwnerOnly` precondition
+- [x] Tests: economy, LLM mock, memory
 
 ### Criterios de aceptación
 
@@ -75,13 +75,13 @@ Esqueleto   MVP       Social    Catch       Mod/RPG     Música
 
 | Comando | Descripción |
 |---|---|
-| `/ping` | Latencia |
-| `/ayuda` | Menú de ayuda |
-| `/saldo` | Balance |
-| `/diario` | Recompensa diaria |
-| `/transferir` | Transferencia |
-| `/apagar` | Apagar bot (owner) |
-| `/reiniciar` | Reiniciar bot (owner) |
+| `/ping` | Latency |
+| `/help` | Help menu |
+| `/balance` | Coin balance |
+| `/daily` | Daily reward |
+| `/transfer` | Transfer coins |
+| `/shutdown` | Shut down bot (owner) |
+| `/restart` | Restart bot (owner) |
 
 ---
 

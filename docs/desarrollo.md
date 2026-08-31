@@ -257,7 +257,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 
 export class DailyCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
-    super(context, { ...options, name: 'diario', description: 'Reclama tu recompensa diaria' });
+    super(context, { ...options, name: 'daily', description: 'Claim your daily reward' });
   }
 
   public override async chatInputRun(interaction: ChatInputCommandInteraction) {
@@ -371,20 +371,20 @@ Preferir **carpetas por dominio**, no un archivo gigante:
 ```
 commands/
   economy/
-    balance.ts    → /saldo
-    daily.ts      → /diario
-    transfer.ts   → /transferir
+    balance.ts    → /balance
+    daily.ts      → /daily
+    transfer.ts   → /transfer
 ```
 
 Para grupos slash, usar `@sapphire/plugin-subcommands`:
 
 ```
-/economia saldo
-/economia diario
-/economia transferir
+/economy balance
+/economy daily
+/economy transfer
 ```
 
-Decisión pendiente Fase 1: comandos planos (`/saldo`) vs grupo (`/economia saldo`). **Recomendación:** planos al inicio (paridad con legacy), migrar a grupos si crece.
+Decisión: comandos planos en inglés (`/balance`, `/daily`, …). Migrar a grupos si crece.
 
 ---
 

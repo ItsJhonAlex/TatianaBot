@@ -7,6 +7,15 @@ import { createClient } from './lib/client.js';
 import { createLogger } from './lib/logger.js';
 import { registerContainerServices } from './lib/container.js';
 import { createDatabase } from './infrastructure/db/client.js';
+import { UserRepository } from './infrastructure/db/repositories/user.repository.js';
+import { ConversationRepository } from './infrastructure/db/repositories/conversation.repository.js';
+import { StatusMessageRepository } from './infrastructure/db/repositories/status-message.repository.js';
+import { EconomyService } from './domain/economy/economy.service.js';
+import { MemoryService } from './domain/chat/memory.service.js';
+import { ChatService } from './domain/chat/chat.service.js';
+import { loadSystemPrompt } from './domain/chat/persona.js';
+import { GroqProvider } from './infrastructure/llm/groq-provider.js';
+import { StatusService } from './core/status.service.js';
 
 const migrationsFolder = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -26,7 +35,27 @@ async function main() {
     appLogger.info({ guildId: env.DEV_GUILD_ID }, 'Slash commands en modo guild de desarrollo');
   }
 
-  registerContainerServices({ db, appLogger });
+  const userRepository = new UserRepository(db);
+  const conversationRepository = new ConversationRepository(db);
+  const statusMessageRepository = new StatusMessageRepository(db);
+
+  const economyService = new EconomyService(userRepository);
+  const memoryService = new MemoryService(conversationRepository);
+  const chatService = new ChatService(
+    new GroqProvider(env.GROQ_API_KEY),
+    memoryService,
+    loadSystemPrompt(),
+  );
+  const statusService = new StatusService(statusMessageRepository, appLogger);
+
+  registerContainerServices({
+    db,
+    env,
+    appLogger,
+    economyService,
+    chatService,
+    statusService,
+  });
 
   const client = createClient(env);
 

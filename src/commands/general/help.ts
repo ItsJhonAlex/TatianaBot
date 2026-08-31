@@ -2,12 +2,12 @@ import { Command } from '@sapphire/framework';
 import { EmbedBuilder, type ChatInputCommandInteraction } from 'discord.js';
 import { bot } from '../../config/bot.js';
 
-export class PingCommand extends Command {
+export class HelpCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
     super(context, {
       ...options,
-      name: 'ping',
-      description: 'Shows the bot latency',
+      name: 'help',
+      description: 'Shows available commands',
     });
   }
 
@@ -18,21 +18,18 @@ export class PingCommand extends Command {
   }
 
   public override async chatInputRun(interaction: ChatInputCommandInteraction) {
-    const start = Date.now();
-    await interaction.deferReply();
-    const roundtrip = Date.now() - start;
-    const wsLatency = this.container.client.ws.ping;
+    const commands = [...this.container.stores.get('commands').values()]
+      .filter((command) => command.supportsChatInputCommands())
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    const lines = commands.map((command) => `\`/${command.name}\` — ${command.description}`);
 
     const embed = new EmbedBuilder()
       .setColor(0x5865f2)
-      .setTitle('🏓 Pong')
-      .addFields(
-        { name: 'Latencia', value: `${roundtrip.toString()} ms`, inline: true },
-        { name: 'WebSocket', value: `${wsLatency.toString()} ms`, inline: true },
-        { name: 'Versión', value: `v${bot.version}`, inline: true },
-      )
-      .setFooter({ text: bot.name });
+      .setTitle(`${bot.name} Help`)
+      .setDescription(lines.join('\n') || 'No commands registered.')
+      .setFooter({ text: `v${bot.version}` });
 
-    return interaction.editReply({ embeds: [embed] });
+    return interaction.reply({ embeds: [embed], ephemeral: true });
   }
 }
