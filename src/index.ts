@@ -38,6 +38,8 @@ import { EmbedService } from './domain/embeds/embed.service.js';
 import { CharacterService } from './domain/rpg/character.service.js';
 import { LoreService } from './domain/rpg/lore.service.js';
 import { AdventureSessionRegistry } from './domain/rpg/adventure-session.registry.js';
+import { createShoukaku, MusicService } from './domain/music/music.service.js';
+import { MusicDownloadService } from './domain/music/music-download.service.js';
 import { GroqProvider } from './infrastructure/llm/groq-provider.js';
 import { StatusService } from './core/status.service.js';
 
@@ -98,6 +100,50 @@ async function main() {
   const loreService = new LoreService();
   const adventureSessionRegistry = new AdventureSessionRegistry();
 
+  const client = createClient(env);
+
+  let musicService: MusicService | null = null;
+  if (env.LAVALINK_HOST && env.LAVALINK_PASSWORD) {
+    const shoukaku = createShoukaku(client, {
+      host: env.LAVALINK_HOST,
+      port: env.LAVALINK_PORT,
+      password: env.LAVALINK_PASSWORD,
+      secure: env.LAVALINK_SECURE,
+    });
+
+    let downloadService: MusicDownloadService | null = null;
+    if (env.MUSIC_USE_DOWNLOAD) {
+      const candidate = new MusicDownloadService(
+        {
+          hostCacheDir: env.MUSIC_CACHE_DIR,
+          lavalinkCacheDir: env.LAVALINK_CACHE_DIR,
+          ytdlpPath: env.YTDLP_PATH,
+          cookiesFromBrowser: env.YTDLP_COOKIES_FROM_BROWSER,
+        },
+        appLogger,
+      );
+      if (await candidate.ensureReady()) {
+        downloadService = candidate;
+        appLogger.info(
+          { cacheDir: env.MUSIC_CACHE_DIR },
+          'Música en modo descarga (yt-dlp → local → borrar)',
+        );
+      } else {
+        appLogger.warn(
+          'yt-dlp no disponible — música en modo stream Lavalink. Instala yt-dlp para modo descarga.',
+        );
+      }
+    }
+
+    musicService = new MusicService(shoukaku, appLogger, downloadService);
+    appLogger.info(
+      { host: env.LAVALINK_HOST, port: env.LAVALINK_PORT },
+      'Música habilitada (Lavalink/Shoukaku)',
+    );
+  } else {
+    appLogger.info('Música deshabilitada (define LAVALINK_HOST y LAVALINK_PASSWORD para activarla)');
+  }
+
   registerContainerServices({
     db,
     env,
@@ -117,10 +163,9 @@ async function main() {
     characterService,
     loreService,
     adventureSessionRegistry,
+    musicService,
     rateLimiter,
   });
-
-  const client = createClient(env);
 
   client.once('error', (error: Error) => {
     appLogger.error({ err: error }, 'Error del cliente Discord');

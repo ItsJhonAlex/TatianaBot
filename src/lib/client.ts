@@ -13,6 +13,7 @@ export function createClient(env: Env): SapphireClient {
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.MessageContent,
+      GatewayIntentBits.GuildVoiceStates,
     ],
     partials: [Partials.Channel, Partials.Message],
     loadMessageCommandListeners: false,

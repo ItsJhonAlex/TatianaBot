@@ -13,6 +13,11 @@ describe('parseEnv', () => {
     expect(env.NODE_ENV).toBe('development');
     expect(env.DATABASE_URL).toBe('file:./data/tatiana.db');
     expect(env.GROQ_MODEL).toBe('openai/gpt-oss-20b');
+    expect(env.LAVALINK_PORT).toBe(2333);
+    expect(env.LAVALINK_SECURE).toBe(false);
+    expect(env.LAVALINK_HOST).toBeUndefined();
+    expect(env.MUSIC_USE_DOWNLOAD).toBe(true);
+    expect(env.MUSIC_CACHE_DIR).toBe('./data/music-cache');
   });
 
   it('falla con mensaje claro si falta DISCORD_TOKEN', () => {

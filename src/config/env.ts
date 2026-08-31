@@ -20,6 +20,26 @@ const envSchema = z.object({
     .string()
     .regex(/^\d+$/, 'STATUS_CHANNEL_ID debe ser un ID numérico')
     .optional(),
+
+  LAVALINK_HOST: z.string().min(1).optional(),
+  LAVALINK_PORT: z.coerce.number().int().positive().default(2333),
+  LAVALINK_PASSWORD: z.string().min(1).optional(),
+  LAVALINK_SECURE: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((value) => value === 'true'),
+
+  /** Descarga con yt-dlp → reproduce local → borra (estilo bots Telegram). */
+  MUSIC_USE_DOWNLOAD: z
+    .enum(['true', 'false'])
+    .default('true')
+    .transform((value) => value === 'true'),
+  MUSIC_CACHE_DIR: z.string().min(1).default('./data/music-cache'),
+  /** Ruta del cache dentro del contenedor Lavalink (debe coincidir con docker-compose). */
+  LAVALINK_CACHE_DIR: z.string().min(1).default('/music-cache'),
+  YTDLP_PATH: z.string().min(1).default('yt-dlp'),
+  /** Ej: firefox, chrome — evita "Sign in to confirm you're not a bot" en YouTube. */
+  YTDLP_COOKIES_FROM_BROWSER: z.string().min(1).optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

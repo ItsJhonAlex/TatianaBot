@@ -14,6 +14,7 @@ import type { EmbedService } from '../domain/embeds/embed.service.js';
 import type { CharacterService } from '../domain/rpg/character.service.js';
 import type { LoreService } from '../domain/rpg/lore.service.js';
 import type { AdventureSessionRegistry } from '../domain/rpg/adventure-session.registry.js';
+import type { MusicService } from '../domain/music/music.service.js';
 import type { StatusService } from '../core/status.service.js';
 import type { Database } from '../infrastructure/db/client.js';
 import type { RateLimiter } from './rate-limiter.js';
@@ -39,6 +40,7 @@ declare module '@sapphire/pieces' {
     characterService: CharacterService;
     loreService: LoreService;
     adventureSessionRegistry: AdventureSessionRegistry;
+    musicService: MusicService | null;
     rateLimiter: RateLimiter;
   }
 }
@@ -62,6 +64,7 @@ export interface AppContainerServices {
   characterService: CharacterService;
   loreService: LoreService;
   adventureSessionRegistry: AdventureSessionRegistry;
+  musicService: MusicService | null;
   rateLimiter: RateLimiter;
 }
 
@@ -84,5 +87,6 @@ export function registerContainerServices(services: AppContainerServices): void 
   container.characterService = services.characterService;
   container.loreService = services.loreService;
   container.adventureSessionRegistry = services.adventureSessionRegistry;
+  container.musicService = services.musicService;
   container.rateLimiter = services.rateLimiter;
 }

@@ -178,10 +178,10 @@ Antes de ir más allá del shell RPG, definir:
 
 ### Entregables
 
-- [ ] Lavalink v4 (Docker o servicio externo)
-- [ ] Shoukaku integrado
-- [ ] `/unirse`, `/reproducir`, `/pausa`, `/saltar`, `/cola`, `/salir`
-- [ ] Cola en DB o memoria con persistencia opcional
+- [x] Lavalink v4 (Docker o servicio externo)
+- [x] Shoukaku integrado
+- [x] `/join`, `/play`, `/pause`, `/skip`, `/queue`, `/leave` (+ `/resume`)
+- [x] Cola en memoria con persistencia opcional
 
 ### Criterios de aceptación
 
@@ -247,4 +247,4 @@ Una tarea/feature está **done** cuando:
 
 ## Próximo paso inmediato
 
-**Decidir gameplay RPG (Fase 4b) o pasar a Fase 5 (música opcional) / Fase 6 (pulido).**
+**Fase 6:** pulido, changelog slash, docs de deploy y migración legacy si aplica.

@@ -7,6 +7,18 @@ Versionado según [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.5.0] — 2026-08-31
+
+### Añadido
+
+- Música vía Lavalink v4 + Shoukaku (sin audio in-process)
+- Comandos: `/join`, `/play`, `/pause`, `/resume`, `/skip`, `/queue`, `/leave`
+- Cola en memoria por guild
+- `docker-compose.yml` + `docs/lavalink.md`
+- Variables opcionales `LAVALINK_*` (el bot arranca sin ellas)
+
+---
+
 ## [2.4.0] — 2026-08-31
 
 ### Añadido

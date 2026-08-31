@@ -26,7 +26,7 @@ Tatiana es un bot de Discord con personalidad propia, ambientado en el mundo de 
 
 ## ✨ Características
 
-### Disponibles (v2.4.0 — Fase 4)
+### Disponibles (v2.5.0 — Fase 5)
 
 - 🏓 `/ping` — latencia
 - 💡 `/help` — lista de comandos
@@ -43,6 +43,7 @@ Tatiana es un bot de Discord con personalidad propia, ambientado en el mundo de 
 - 🖼️ `/embed` — CRUD de embeds guardados
 - 🗡️ `/adventure`, `/character`, `/character-delete` — ficha RPG
 - 📚 `/lore` — lore de Aethoria
+- 🎵 `/join`, `/play`, `/pause`, `/resume`, `/skip`, `/queue`, `/leave` — música (Lavalink)
 - 🗄️ Persistencia SQLite (`bun:sqlite` + Drizzle)
 
 ### En roadmap
@@ -50,7 +51,6 @@ Tatiana es un bot de Discord con personalidad propia, ambientado en el mundo de 
 | Fase | Features |
 |---|---|
 | 4b | Gameplay RPG (si se decide) |
-| 5 | Música (Lavalink, opcional) |
 | 6 | Pulido / migración |
 
 Ver [docs/roadmap.md](docs/roadmap.md) para el plan completo.
