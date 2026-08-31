@@ -24,8 +24,8 @@ El código Python v1 está en `legacy/` (referencia de features, lore y assets).
 
 ```bash
 cp .env.example .env   # completar variables
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 Ver [README.md](../README.md) y [desarrollo.md](./desarrollo.md) para el detalle completo.

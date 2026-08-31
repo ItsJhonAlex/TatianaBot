@@ -1,10 +1,11 @@
-# Node.js / TypeScript
+# Bun / TypeScript
 node_modules/
 dist/
 *.tsbuildinfo
 .turbo/
 coverage/
 .npm/
+.bun/
 
 # Entorno virtual
 venv/

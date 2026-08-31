@@ -13,22 +13,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 22
-          cache: npm
+          bun-version: 1.3.14
 
       - name: Instalar dependencias
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: Lint
-        run: npm run lint
+        run: bun run lint
 
       - name: Typecheck
-        run: npm run typecheck
+        run: bun run typecheck
 
       - name: Tests
-        run: npm test
+        run: bun test
 
-      - name: Build
-        run: npm run build
+      - name: Build (typecheck emit)
+        run: bun run build

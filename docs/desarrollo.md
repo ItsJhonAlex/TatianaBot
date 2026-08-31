@@ -2,7 +2,7 @@
 
 Documento maestro de arquitectura, convenciones y stack para el rewrite de TatianaBot.
 
-**Stack:** TypeScript · Node.js 22 LTS · discord.js 14 · Sapphire · Drizzle · Groq
+**Stack:** TypeScript · Bun · discord.js 14 · Sapphire · Drizzle · Groq
 
 ---
 
@@ -23,7 +23,7 @@ Documento maestro de arquitectura, convenciones y stack para el rewrite de Tatia
 13. [Seguridad](#13-seguridad)
 14. [Errores y UX en Discord](#14-errores-y-ux-en-discord)
 15. [Migración desde legacy](#15-migración-desde-legacy)
-16. [Scripts y comandos npm](#16-scripts-y-comandos-npm)
+16. [Scripts y comandos Bun](#16-scripts-y-comandos-bun)
 17. [Decisiones arquitectónicas (ADR)](#17-decisiones-arquitectónicas-adr)
 18. [Anti-patrones del legacy (no repetir)](#18-anti-patrones-del-legacy-no-repetir)
 
@@ -58,28 +58,28 @@ TatianaBot v2 es un bot de Discord con tres pilares:
 
 | Componente | Elección | Versión orientativa |
 |---|---|---|
-| Runtime | Node.js | 22 LTS |
+| Runtime | **Bun** 1.2+ | Runtime + package manager + test runner nativo |
 | Lenguaje | TypeScript | 5.x, `strict: true` |
 | Discord API | discord.js | 14.x |
 | Framework bot | @sapphire/framework | latest estable |
 | Validación config | Zod | 3.x |
 | ORM | Drizzle ORM | latest |
-| DB dev | better-sqlite3 | — |
+| DB | **bun:sqlite** (nativo) | — |
 | DB prod (opcional) | PostgreSQL + pg | cuando escale |
 | Migraciones | drizzle-kit | — |
 | IA | groq-sdk | official |
-| HTTP | fetch nativo / undici | — |
+| HTTP | fetch nativo de Bun | — |
 | Logging | pino | — |
-| Tests | Vitest | — |
+| Tests | **bun:test** | — |
 | Lint | ESLint + typescript-eslint | — |
 | Format | Prettier | — |
 
 ### Dependencias Sapphire recomendadas
 
 ```bash
-npm install @sapphire/framework discord.js
-npm install @sapphire/plugin-logger @sapphire/plugin-editable-commands
-npm install @sapphire/utilities @sapphire/discord.js-utilities
+bun add @sapphire/framework discord.js
+bun add @sapphire/plugin-logger @sapphire/plugin-editable-commands
+bun add @sapphire/utilities @sapphire/discord.js-utilities
 ```
 
 Plugins opcionales según necesidad:
@@ -209,11 +209,11 @@ TatianaBot/
 │           ├── poke-api.client.ts
 │           └── meme-api.client.ts
 ├── assets/                        # Imágenes (port desde legacy)
-├── drizzle.config.ts
 ├── package.json
+├── bun.lock
+├── bunfig.toml
 ├── tsconfig.json
 ├── eslint.config.js
-├── vitest.config.ts
 ├── .env.example
 └── .gitignore
 ```
@@ -476,7 +476,7 @@ export class UserRepository {
 
 - Toda modificación de schema → migración Drizzle
 - Nunca alterar DB a mano en producción
-- Script: `npm run db:generate` → `npm run db:migrate`
+- Script: `bun run db:generate` → `bun run db:migrate`
 
 ### 8.4 Modelo inicial (Fase 0–1)
 
@@ -627,10 +627,12 @@ export const logger = pino({
 | Providers | GroqProvider con mock fetch |
 | Commands | Opcional; preferir testear service |
 
-### 12.3 Vitest
+### 12.3 bun:test
 
 ```typescript
 // domain/economy/economy.service.test.ts
+import { describe, expect, it } from 'bun:test';
+
 describe('EconomyService.claimDaily', () => {
   it('rechaza si el cooldown no expiró', async () => {
     // ...
@@ -642,10 +644,11 @@ describe('EconomyService.claimDaily', () => {
 
 ```yaml
 # .github/workflows/ci.yml
-- run: npm ci
-- run: npm run lint
-- run: npm run typecheck
-- run: npm test
+- uses: oven-sh/setup-bun@v2
+- run: bun install --frozen-lockfile
+- run: bun run lint
+- run: bun run typecheck
+- run: bun test
 ```
 
 ---
@@ -658,7 +661,7 @@ describe('EconomyService.claimDaily', () => {
 4. **Sanitizar input** antes de enviar a LLM (no confiar ciegamente)
 5. **No ejecutar** código/arbitrary commands desde respuestas IA
 6. **Rate limit** comandos sensibles (transfer, catch)
-7. **Dependabot** activo para npm audit
+7. **Dependabot** / `bun audit` para vulnerabilidades de deps
 
 ---
 
@@ -729,28 +732,28 @@ Si no hay usuarios reales → empezar DB limpia.
 
 ---
 
-## 16. Scripts y comandos npm
+## 16. Scripts y comandos Bun
 
-Definir en `package.json` desde Fase 0:
+Definidos en `package.json`:
 
 ```json
 {
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "build": "tsc --noEmit",
     "lint": "eslint src --max-warnings 0",
-    "lint:fix": "eslint src --fix",
-    "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "db:generate": "bunx drizzle-kit generate",
+    "db:migrate": "bun src/infrastructure/db/migrate.ts",
+    "db:studio": "bunx drizzle-kit studio"
   }
 }
 ```
+
+Bun carga `.env` automáticamente; no hace falta `dotenv`.
 
 ---
 
@@ -761,10 +764,11 @@ Definir en `package.json` desde Fase 0:
 | ADR-001 | TypeScript + Sapphire | Tipado, plugins modulares, ecosistema Discord | 2026-08 |
 | ADR-002 | Slash-only público | Eliminar duplicación legacy | 2026-08 |
 | ADR-003 | Groq como LLM default | Ya usado, SDK oficial, bajo latency | 2026-08 |
-| ADR-004 | Drizzle + SQLite | Ligero, migraciones, async path a Postgres | 2026-08 |
+| ADR-004 | Drizzle + bun:sqlite | Nativo en Bun, sin bindings nativos externos | 2026-08 |
 | ADR-005 | Lavalink para música | Estándar industria; no audio in-process | 2026-08 |
 | ADR-006 | Memoria IA por user+guild | Fix memoria global legacy | 2026-08 |
 | ADR-007 | No power control vía LLM | Seguridad; solo commands owner | 2026-08 |
+| ADR-008 | Bun como runtime | Package manager + runner + test + SQLite nativo | 2026-08 |
 
 Nuevas decisiones significativas → añadir fila aquí antes de implementar.
 

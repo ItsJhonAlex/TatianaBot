@@ -1,8 +1,6 @@
-import 'dotenv/config';
-
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
+import { migrate } from 'drizzle-orm/bun-sqlite/migrator';
 import { ApplicationCommandRegistries } from '@sapphire/framework';
 import { parseEnv } from './config/env.js';
 import { createClient } from './lib/client.js';

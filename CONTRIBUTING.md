@@ -27,8 +27,7 @@
 
 ### Requisitos
 
-- Node.js **22+**
-- npm 10+
+- [Bun](https://bun.sh/) **1.2+**
 - Token de bot Discord
 - API key de Groq
 
@@ -37,7 +36,7 @@
 ```bash
 git clone https://github.com/ItsJhonAlex/TatianaBot.git
 cd TatianaBot
-npm install
+bun install
 cp .env.example .env
 ```
 
@@ -52,7 +51,7 @@ LOG_LEVEL=debug
 ### Arrancar
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 ---
@@ -87,10 +86,9 @@ Roadmap: [docs/roadmap.md](docs/roadmap.md)
 3. Implementa con tests para lógica de negocio.
 4. Verifica calidad:
    ```bash
-   npm run lint
-   npm run typecheck
-   npm test
-   npm run build
+   bun run lint
+   bun run typecheck
+   bun test
    ```
 5. Abre un Pull Request con descripción clara del cambio y cómo probarlo.
 
@@ -153,8 +151,8 @@ Convenciones detalladas: [docs/desarrollo.md §6](docs/desarrollo.md#6-sapphire-
 | Repositories | Con SQLite in-memory |
 
 ```bash
-npm test              # una vez
-npm run test:watch    # modo watch
+bun test              # una vez
+bun run test:watch    # modo watch
 ```
 
 El CI rechaza PRs que fallen lint, typecheck o tests.
@@ -166,11 +164,11 @@ El CI rechaza PRs que fallen lint, typecheck o tests.
 1. Define el schema en `src/infrastructure/db/schema/`
 2. Genera migración:
    ```bash
-   npm run db:generate
+   bun run db:generate
    ```
 3. Aplica:
    ```bash
-   npm run db:migrate
+   bun run db:migrate
    ```
 
 No alteres la DB a mano en producción.

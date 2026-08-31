@@ -13,23 +13,24 @@ Rewrite completo del bot en **TypeScript + Sapphire**. El código Python v1 se a
 
 ### Añadido
 
-- Scaffold del proyecto v2 (Node.js 22, TypeScript strict, ESM)
+- Scaffold del proyecto v2 (Bun, TypeScript strict, ESM)
 - Framework Discord: `@sapphire/framework` + `discord.js` 14
-- Configuración validada con Zod (`.env`)
+- Runtime y package manager: **Bun** (tests con `bun:test`, SQLite nativo)
+- Configuración validada con Zod (`.env`; Bun lo carga automáticamente)
 - Logger estructurado con pino
-- Drizzle ORM + SQLite con migraciones automáticas
+- Drizzle ORM + **bun:sqlite** con migraciones automáticas
 - Comando `/ping` con embed de latencia
 - Listener `ready` con logging de conexión
-- Tests con Vitest (validación de env)
-- CI con GitHub Actions (lint, typecheck, test, build)
+- Tests con bun:test (validación de env)
+- CI con GitHub Actions + setup-bun (lint, typecheck, test)
 - Documentación: arquitectura, roadmap, README, legal y contribución
 
 ### Cambiado
 
-- Stack: Python/discord.py → TypeScript/Sapphire
+- Stack: Python/discord.py → TypeScript/Sapphire/**Bun**
 - IA planificada: Gemini → Groq (implementación en Fase 1)
 - Superficie de comandos: slash-only (sin duplicar prefijos)
-- Persistencia: SQLAlchemy sync → Drizzle + SQLite
+- Persistencia: SQLAlchemy sync → Drizzle + bun:sqlite
 
 ### Eliminado (respecto a v1 en runtime)
 

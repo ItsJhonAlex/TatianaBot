@@ -5,6 +5,7 @@
 ![Discord Bot](https://img.shields.io/badge/Discord-Bot-7289DA?style=for-the-badge&logo=discord&logoColor=white)
 ![Groq AI](https://img.shields.io/badge/Groq-AI-f55036?style=for-the-badge)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)
 ![Sapphire](https://img.shields.io/badge/Sapphire-Framework-5865F2?style=for-the-badge)
 
 [![Versión](https://img.shields.io/badge/versión-2.0.0-blue.svg)](CHANGELOG.md)
@@ -19,7 +20,7 @@
 
 Tatiana es un bot de Discord con personalidad propia, ambientado en el mundo de **Aethoria**. Combina conversación con IA (Groq), utilidades de comunidad y minijuegos, con una arquitectura modular pensada para crecer sin deuda técnica.
 
-**v2** es un rewrite completo en **TypeScript + Sapphire**. El código Python anterior permanece en `legacy/` solo como referencia.
+**v2** es un rewrite completo en **TypeScript + Sapphire + Bun**. El código Python anterior permanece en `legacy/` solo como referencia.
 
 ---
 
@@ -70,7 +71,7 @@ Agradecemos el apoyo de nuestros patrocinadores:
 
 ### Requisitos
 
-- **Node.js 22+**
+- **[Bun](https://bun.sh/) 1.2+**
 - Cuenta de Discord con permisos para crear bots
 - Clave API de [Groq](https://console.groq.com/)
 
@@ -79,7 +80,7 @@ Agradecemos el apoyo de nuestros patrocinadores:
 ```bash
 git clone https://github.com/ItsJhonAlex/TatianaBot.git
 cd TatianaBot
-npm install
+bun install
 cp .env.example .env
 ```
 
@@ -100,20 +101,20 @@ DEV_GUILD_ID=id_de_tu_servidor_de_pruebas
 ### Arrancar
 
 ```bash
-npm run dev      # desarrollo con hot reload
-npm run build    # compilar
-npm start        # producción
+bun run dev      # desarrollo con hot reload
+bun run start    # producción (Bun ejecuta TypeScript directo)
+bun run typecheck
 ```
 
 ### Scripts útiles
 
 | Comando | Descripción |
 |---|---|
-| `npm test` | Ejecutar tests |
-| `npm run lint` | ESLint |
-| `npm run typecheck` | Verificación TypeScript |
-| `npm run db:migrate` | Aplicar migraciones |
-| `npm run db:generate` | Generar migración tras cambiar schema |
+| `bun test` | Ejecutar tests |
+| `bun run lint` | ESLint |
+| `bun run typecheck` | Verificación TypeScript |
+| `bun run db:migrate` | Aplicar migraciones |
+| `bun run db:generate` | Generar migración tras cambiar schema |
 
 ---
 
@@ -144,7 +145,7 @@ Las contribuciones son bienvenidas. Lee [CONTRIBUTING.md](CONTRIBUTING.md) antes
 1. Fork del repositorio
 2. Rama feature: `git checkout -b feature/mi-feature`
 3. Cambios + tests
-4. `npm run lint && npm test && npm run typecheck`
+4. `bun run lint && bun test && bun run typecheck`
 5. Pull Request
 
 ---

@@ -1,0 +1,6 @@
+[install]
+# bun.lock es la fuente de verdad de dependencias
+
+[test]
+# No ejecutar tests compilados en dist/
+root = "./src"

@@ -34,7 +34,7 @@ Esqueleto   MVP       Social    Catch       Mod/RPG     Música
 
 ### Criterios de aceptación
 
-- `npm run dev` conecta el bot a Discord sin errores
+- `bun run dev` conecta el bot a Discord sin errores
 - `/ping` responde con latencia en ms
 - Variables faltantes muestran error claro al arrancar
 - Tests mínimos pasan en CI
