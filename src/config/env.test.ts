@@ -12,6 +12,7 @@ describe('parseEnv', () => {
     expect(env.DISCORD_TOKEN).toBe('test-token');
     expect(env.NODE_ENV).toBe('development');
     expect(env.DATABASE_URL).toBe('file:./data/tatiana.db');
+    expect(env.GROQ_MODEL).toBe('openai/gpt-oss-20b');
   });
 
   it('falla con mensaje claro si falta DISCORD_TOKEN', () => {

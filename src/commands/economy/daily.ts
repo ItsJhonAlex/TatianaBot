@@ -1,6 +1,7 @@
 import { Command } from '@sapphire/framework';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { formatRemaining } from '../../domain/economy/economy.service.js';
+import { EPHEMERAL } from '../../lib/discord-flags.js';
 
 export class DailyCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -24,13 +25,13 @@ export class DailyCommand extends Command {
       if (result.error.code === 'COOLDOWN') {
         return interaction.reply({
           content: `You can't claim yet. Time remaining: **${formatRemaining(result.error.remainingMs)}**`,
-          ephemeral: true,
+          flags: EPHEMERAL,
         });
       }
 
       return interaction.reply({
         content: "Couldn't claim the reward. Please try again later.",
-        ephemeral: true,
+        flags: EPHEMERAL,
       });
     }
 

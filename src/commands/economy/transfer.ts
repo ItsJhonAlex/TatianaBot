@@ -1,5 +1,6 @@
 import { Command } from '@sapphire/framework';
 import type { ChatInputCommandInteraction } from 'discord.js';
+import { EPHEMERAL } from '../../lib/discord-flags.js';
 
 export class TransferCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -35,7 +36,7 @@ export class TransferCommand extends Command {
     if (target.bot) {
       return interaction.reply({
         content: "You can't transfer coins to a bot.",
-        ephemeral: true,
+        flags: EPHEMERAL,
       });
     }
 
@@ -62,7 +63,7 @@ export class TransferCommand extends Command {
           break;
       }
 
-      return interaction.reply({ content, ephemeral: true });
+      return interaction.reply({ content, flags: EPHEMERAL });
     }
 
     return interaction.reply({

@@ -1,6 +1,7 @@
 import { Command } from '@sapphire/framework';
 import { EmbedBuilder, type ChatInputCommandInteraction } from 'discord.js';
 import { bot } from '../../config/bot.js';
+import { EPHEMERAL } from '../../lib/discord-flags.js';
 
 export class HelpCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -30,6 +31,6 @@ export class HelpCommand extends Command {
       .setDescription(lines.join('\n') || 'No commands registered.')
       .setFooter({ text: `v${bot.version}` });
 
-    return interaction.reply({ embeds: [embed], ephemeral: true });
+    return interaction.reply({ embeds: [embed], flags: EPHEMERAL });
   }
 }

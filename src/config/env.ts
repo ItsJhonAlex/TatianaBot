@@ -3,6 +3,7 @@ import { z } from 'zod';
 const envSchema = z.object({
   DISCORD_TOKEN: z.string().min(1, 'DISCORD_TOKEN es requerido'),
   GROQ_API_KEY: z.string().min(1, 'GROQ_API_KEY es requerido'),
+  GROQ_MODEL: z.string().min(1).default('openai/gpt-oss-20b'),
   AUTHORIZED_USER_ID: z
     .string()
     .regex(/^\d+$/, 'AUTHORIZED_USER_ID debe ser un ID numérico de Discord'),

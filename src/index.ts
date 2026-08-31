@@ -42,7 +42,7 @@ async function main() {
   const economyService = new EconomyService(userRepository);
   const memoryService = new MemoryService(conversationRepository);
   const chatService = new ChatService(
-    new GroqProvider(env.GROQ_API_KEY),
+    new GroqProvider(env.GROQ_API_KEY, env.GROQ_MODEL),
     memoryService,
     loadSystemPrompt(),
   );

@@ -1,18 +1,19 @@
 import Groq from 'groq-sdk';
 import type { ChatMessage, CompleteOptions, LLMProvider } from '../../domain/chat/llm-provider.js';
 
-const DEFAULT_MODEL = 'llama-3.1-8b-instant';
-
 export class GroqProvider implements LLMProvider {
   private readonly client: Groq;
 
-  public constructor(apiKey: string) {
+  public constructor(
+    apiKey: string,
+    private readonly defaultModel = 'openai/gpt-oss-20b',
+  ) {
     this.client = new Groq({ apiKey });
   }
 
   public async complete(messages: ChatMessage[], options: CompleteOptions = {}): Promise<string> {
     const completion = await this.client.chat.completions.create({
-      model: options.model ?? DEFAULT_MODEL,
+      model: options.model ?? this.defaultModel,
       messages,
       temperature: options.temperature ?? 0.7,
       max_tokens: options.maxTokens ?? 1024,
