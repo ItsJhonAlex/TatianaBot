@@ -12,6 +12,9 @@ import { UserRepository } from './infrastructure/db/repositories/user.repository
 import { ConversationRepository } from './infrastructure/db/repositories/conversation.repository.js';
 import { StatusMessageRepository } from './infrastructure/db/repositories/status-message.repository.js';
 import { HttpClient } from './infrastructure/http/http-client.js';
+import { CatchAttemptRepository } from './infrastructure/db/repositories/catch-attempt.repository.js';
+import { PokemonRepository } from './infrastructure/db/repositories/pokemon.repository.js';
+import { YugiohRepository } from './infrastructure/db/repositories/yugioh.repository.js';
 import { EconomyService } from './domain/economy/economy.service.js';
 import { MemoryService } from './domain/chat/memory.service.js';
 import { ChatService } from './domain/chat/chat.service.js';
@@ -19,6 +22,10 @@ import { loadSystemPrompt } from './domain/chat/persona.js';
 import { EightBallService } from './domain/social/eightball.service.js';
 import { MemeService } from './domain/social/meme.service.js';
 import { AnimeService } from './domain/social/anime.service.js';
+import { CatchGameService } from './domain/catch-games/catch-game.service.js';
+import { PokemonService } from './domain/catch-games/pokemon.service.js';
+import { YugiohService } from './domain/catch-games/yugioh.service.js';
+import { CatchSpawnRegistry } from './domain/catch-games/catch-spawn.registry.js';
 import { GroqProvider } from './infrastructure/llm/groq-provider.js';
 import { StatusService } from './core/status.service.js';
 
@@ -43,6 +50,9 @@ async function main() {
   const userRepository = new UserRepository(db);
   const conversationRepository = new ConversationRepository(db);
   const statusMessageRepository = new StatusMessageRepository(db);
+  const catchAttemptRepository = new CatchAttemptRepository(db);
+  const pokemonRepository = new PokemonRepository(db);
+  const yugiohRepository = new YugiohRepository(db);
   const httpClient = new HttpClient();
   const rateLimiter = new RateLimiter();
 
@@ -57,6 +67,10 @@ async function main() {
   const eightBallService = new EightBallService();
   const memeService = new MemeService(httpClient);
   const animeService = new AnimeService(httpClient);
+  const catchGameService = new CatchGameService(catchAttemptRepository);
+  const pokemonService = new PokemonService(httpClient, pokemonRepository, userRepository);
+  const yugiohService = new YugiohService(httpClient, yugiohRepository, userRepository);
+  const catchSpawnRegistry = new CatchSpawnRegistry();
 
   registerContainerServices({
     db,
@@ -68,6 +82,10 @@ async function main() {
     eightBallService,
     memeService,
     animeService,
+    catchGameService,
+    pokemonService,
+    yugiohService,
+    catchSpawnRegistry,
     rateLimiter,
   });
 

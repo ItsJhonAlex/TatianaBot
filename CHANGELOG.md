@@ -7,6 +7,18 @@ Versionado según [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.3.0] — 2026-08-31
+
+### Añadido
+
+- Catch games: `/pokemon`, `/pokedex`, `/yugioh`, `/deck`
+- `CatchGameService` compartido (intentos + reset horario)
+- Inventario Pokémon / Yu-Gi-Oh! en SQLite
+- Botón de captura con recompensa de monedas
+- Tests de intentos, captura y spawn registry
+
+---
+
 ## [2.2.0] — 2026-08-31
 
 ### Añadido

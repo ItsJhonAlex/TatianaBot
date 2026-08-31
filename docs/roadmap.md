@@ -116,11 +116,11 @@ Esqueleto   MVP       Social    Catch       Mod/RPG     Música
 
 ### Entregables
 
-- [ ] Abstracción `CatchGameService` (intentos, cooldown, coste)
-- [ ] `/pokemon`, `/pokedex` (PokeAPI)
-- [ ] `/yugioh`, `/deck` (YGOProDeck)
-- [ ] Modelos DB: `pokemon`, `yugioh_cards`, `attempts`
-- [ ] Embeds consistentes con el resto del bot
+- [x] Abstracción `CatchGameService` (intentos, cooldown, coste)
+- [x] `/pokemon`, `/pokedex` (PokeAPI)
+- [x] `/yugioh`, `/deck` (YGOProDeck)
+- [x] Modelos DB: `pokemon`, `yugioh_cards`, `attempts`
+- [x] Embeds consistentes con el resto del bot
 
 ### Criterios de aceptación
 
@@ -247,4 +247,4 @@ Una tarea/feature está **done** cuando:
 
 ## Próximo paso inmediato
 
-**Ejecutar Fase 0:** scaffold del proyecto en la raíz del repo siguiendo [desarrollo.md](./desarrollo.md).
+**Ejecutar Fase 4:** moderación, embeds CRUD y shell RPG según [desarrollo.md](./desarrollo.md).

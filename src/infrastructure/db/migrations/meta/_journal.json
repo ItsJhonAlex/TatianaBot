@@ -15,6 +15,13 @@
       "when": 1788205121874,
       "tag": "0001_late_next_avengers",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1788211453574,
+      "tag": "0002_neat_tinkerer",
+      "breakpoints": true
     }
   ]
 }
