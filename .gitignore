@@ -20,7 +20,7 @@ __pycache__/
 *.py[cod]
 *.so
 
-# Archivos de distribución / empaquetado
+# Archivos de distribución / empaquetado (solo raíz; no ignorar src/lib/)
 *.egg
 *.egg-info/
 dist/
@@ -31,8 +31,8 @@ var/
 sdist/
 develop-eggs/
 .installed.cfg
-lib/
-lib64/
+/lib/
+/lib64/
 
 # Archivos de logs
 *.log

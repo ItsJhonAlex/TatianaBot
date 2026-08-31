@@ -26,21 +26,23 @@ Tatiana es un bot de Discord con personalidad propia, ambientado en el mundo de 
 
 ## ✨ Características
 
-### Disponibles (v2.1.0 — Fase 1)
+### Disponibles (v2.2.0 — Fase 2)
 
-- 🏓 `/ping` — latencia del bot
-- 💡 `/help` — command list
-- 💰 `/balance`, `/daily`, `/transfer` — economy
+- 🏓 `/ping` — latencia
+- 💡 `/help` — lista de comandos
+- 💰 `/balance`, `/daily`, `/transfer` — economía
 - 🔌 `/shutdown`, `/restart` — admin (owner)
-- 🧠 Chat IA por mención/reply (Groq + personalidad Aethoria)
+- 🧠 Chat IA por mención/reply (Groq + Aethoria)
+- 🎱 `/8ball` — bola 8
+- 😂 `/meme` — memes aleatorios
+- 🎭 `/anime` — reacciones GIF (config en `anime-actions.json`)
+- 📊 `/poll` — encuestas con reacciones
 - 🗄️ Persistencia SQLite (`bun:sqlite` + Drizzle)
-- ✅ CI, tests de economía/memoria/config
 
 ### En roadmap
 
 | Fase | Features |
 |---|---|
-| 2 | Memes, 8ball, anime, encuestas |
 | 3 | Pokémon, Yu-Gi-Oh! |
 | 4 | Automod, embeds, RPG (ficha) |
 | 5 | Música (Lavalink, opcional) |

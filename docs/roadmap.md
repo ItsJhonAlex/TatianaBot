@@ -93,12 +93,12 @@ Esqueleto   MVP       Social    Catch       Mod/RPG     Música
 
 ### Entregables
 
-- [ ] `/8ball`
-- [ ] `/meme` (meme-api.com)
-- [ ] Interacciones anime vía tabla de endpoints (nekos.best) — mínimo 5, extensible
-- [ ] `/encuesta`
-- [ ] Abstracción `HttpClient` con timeout/retry
-- [ ] Rate limit por usuario en comandos costosos
+- [x] `/8ball`
+- [x] `/meme` (meme-api.com)
+- [x] Interacciones anime vía tabla de endpoints (nekos.best) — mínimo 5, extensible
+- [x] `/poll`
+- [x] Abstracción `HttpClient` con timeout/retry
+- [x] Rate limit por usuario en comandos costosos
 
 ### Criterios de aceptación
 

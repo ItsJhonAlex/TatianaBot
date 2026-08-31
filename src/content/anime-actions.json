@@ -1,0 +1,61 @@
+{
+  "baseUrl": "https://nekos.best/api/v2",
+  "actions": [
+    {
+      "id": "hug",
+      "label": "Hug",
+      "endpoint": "hug",
+      "template": "{actor} hugs {target}!",
+      "requiresTarget": true
+    },
+    {
+      "id": "kiss",
+      "label": "Kiss",
+      "endpoint": "kiss",
+      "template": "{actor} kisses {target}!",
+      "requiresTarget": true
+    },
+    {
+      "id": "pat",
+      "label": "Pat",
+      "endpoint": "pat",
+      "template": "{actor} pats {target}!",
+      "requiresTarget": true
+    },
+    {
+      "id": "slap",
+      "label": "Slap",
+      "endpoint": "slap",
+      "template": "{actor} slaps {target}!",
+      "requiresTarget": true
+    },
+    {
+      "id": "cuddle",
+      "label": "Cuddle",
+      "endpoint": "cuddle",
+      "template": "{actor} cuddles {target}!",
+      "requiresTarget": true
+    },
+    {
+      "id": "wave",
+      "label": "Wave",
+      "endpoint": "wave",
+      "template": "{actor} waves!",
+      "requiresTarget": false
+    },
+    {
+      "id": "dance",
+      "label": "Dance",
+      "endpoint": "dance",
+      "template": "{actor} starts dancing!",
+      "requiresTarget": false
+    },
+    {
+      "id": "smile",
+      "label": "Smile",
+      "endpoint": "smile",
+      "template": "{actor} smiles!",
+      "requiresTarget": false
+    }
+  ]
+}

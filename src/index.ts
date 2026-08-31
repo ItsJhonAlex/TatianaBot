@@ -6,14 +6,19 @@ import { parseEnv } from './config/env.js';
 import { createClient } from './lib/client.js';
 import { createLogger } from './lib/logger.js';
 import { registerContainerServices } from './lib/container.js';
+import { RateLimiter } from './lib/rate-limiter.js';
 import { createDatabase } from './infrastructure/db/client.js';
 import { UserRepository } from './infrastructure/db/repositories/user.repository.js';
 import { ConversationRepository } from './infrastructure/db/repositories/conversation.repository.js';
 import { StatusMessageRepository } from './infrastructure/db/repositories/status-message.repository.js';
+import { HttpClient } from './infrastructure/http/http-client.js';
 import { EconomyService } from './domain/economy/economy.service.js';
 import { MemoryService } from './domain/chat/memory.service.js';
 import { ChatService } from './domain/chat/chat.service.js';
 import { loadSystemPrompt } from './domain/chat/persona.js';
+import { EightBallService } from './domain/social/eightball.service.js';
+import { MemeService } from './domain/social/meme.service.js';
+import { AnimeService } from './domain/social/anime.service.js';
 import { GroqProvider } from './infrastructure/llm/groq-provider.js';
 import { StatusService } from './core/status.service.js';
 
@@ -38,6 +43,8 @@ async function main() {
   const userRepository = new UserRepository(db);
   const conversationRepository = new ConversationRepository(db);
   const statusMessageRepository = new StatusMessageRepository(db);
+  const httpClient = new HttpClient();
+  const rateLimiter = new RateLimiter();
 
   const economyService = new EconomyService(userRepository);
   const memoryService = new MemoryService(conversationRepository);
@@ -47,6 +54,9 @@ async function main() {
     loadSystemPrompt(),
   );
   const statusService = new StatusService(statusMessageRepository, appLogger);
+  const eightBallService = new EightBallService();
+  const memeService = new MemeService(httpClient);
+  const animeService = new AnimeService(httpClient);
 
   registerContainerServices({
     db,
@@ -55,6 +65,10 @@ async function main() {
     economyService,
     chatService,
     statusService,
+    eightBallService,
+    memeService,
+    animeService,
+    rateLimiter,
   });
 
   const client = createClient(env);

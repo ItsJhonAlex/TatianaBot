@@ -7,6 +7,18 @@ Versionado según [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.2.0] — 2026-08-31
+
+### Añadido
+
+- `/8ball`, `/meme`, `/anime`, `/poll`
+- `HttpClient` con timeout y reintentos
+- Rate limit en memoria para `/meme` y `/anime`
+- Content pack: `anime-actions.json`, `eightball-responses.json`
+- Tests de HttpClient, RateLimiter, EightBall y AnimeService
+
+---
+
 ## [2.1.0] — 2026-08-31
 
 ### Añadido
