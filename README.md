@@ -52,7 +52,7 @@ Tatiana es un bot de Discord con personalidad propia, ambientado en el mundo de 
 
 | Fase | Features |
 |---|---|
-| 4b | Gameplay RPG (si se decide) |
+| **4b** | RPG gameplay: XP, explore, quests, combate PvE, inventario |
 | 6 | Migración datos legacy (si aplica) |
 
 Ver [docs/roadmap.md](docs/roadmap.md) para el plan completo.

@@ -39,7 +39,7 @@ TatianaBot v2 es un bot de Discord con tres pilares:
 |---|---|
 | **IA con personalidad** | Tatiana, entidad de Aethoria; conversación contextual vía Groq |
 | **Engagement** | Economía, catch games, comandos sociales |
-| **Utilidades de servidor** | Ayuda, status, moderación, embeds, RPG cosmético (fase inicial) |
+| **Utilidades de servidor** | Ayuda, status, moderación, embeds, RPG (shell Fase 4 → gameplay Fase 4b) |
 
 ### Objetivos técnicos del rewrite
 
@@ -769,6 +769,7 @@ Bun carga `.env` automáticamente; no hace falta `dotenv`.
 | ADR-006 | Memoria IA por user+guild | Fix memoria global legacy | 2026-08 |
 | ADR-007 | No power control vía LLM | Seguridad; solo commands owner | 2026-08 |
 | ADR-008 | Bun como runtime | Package manager + runner + test + SQLite nativo | 2026-08 |
+| ADR-009 | RPG gameplay en Fase 4b (PvE) | Shell en 4; progreso/quests/combate turn-based Discord-native; content JSON; sin PvP ni LLM para mecánicas | 2026-09 |
 
 Nuevas decisiones significativas → añadir fila aquí antes de implementar.
 
