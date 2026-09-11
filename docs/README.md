@@ -6,6 +6,7 @@
 |---|---|
 | [desarrollo.md](./desarrollo.md) | Arquitectura, stack, convenciones y guía de desarrollo |
 | [roadmap.md](./roadmap.md) | Plan de implementación por fases |
+| [deploy.md](./deploy.md) | Deploy: checklist, VPS, Docker, Railway |
 | [lavalink.md](./lavalink.md) | Deploy de Lavalink v4 (música) |
 
 ## Legal

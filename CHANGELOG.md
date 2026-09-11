@@ -7,6 +7,23 @@ Versionado según [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.6.0] — 2026-09-11
+
+### Añadido
+
+- `/changelog` — panel de notas de versión (lee `CHANGELOG.md`; no despliega código)
+- `/stats` — uptime, comandos/min y totales de sesión
+- Métricas en memoria + listener `ChatInputCommandFinish`
+- Status embed enriquecido con uptime y cmds/min
+- `docs/deploy.md` — checklist, VPS/systemd, Docker, Railway
+- `Dockerfile` del bot
+
+### Cambiado
+
+- Privacy Policy y Terms of Service actualizados (música, moderación, métricas)
+
+---
+
 ## [2.5.0] — 2026-08-31
 
 ### Añadido

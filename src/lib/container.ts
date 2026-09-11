@@ -15,7 +15,9 @@ import type { CharacterService } from '../domain/rpg/character.service.js';
 import type { LoreService } from '../domain/rpg/lore.service.js';
 import type { AdventureSessionRegistry } from '../domain/rpg/adventure-session.registry.js';
 import type { MusicService } from '../domain/music/music.service.js';
+import type { ChangelogService } from '../domain/changelog/changelog.service.js';
 import type { StatusService } from '../core/status.service.js';
+import type { MetricsService } from '../core/metrics.service.js';
 import type { Database } from '../infrastructure/db/client.js';
 import type { RateLimiter } from './rate-limiter.js';
 import type { Logger } from './logger.js';
@@ -28,6 +30,8 @@ declare module '@sapphire/pieces' {
     economyService: EconomyService;
     chatService: ChatService;
     statusService: StatusService;
+    metricsService: MetricsService;
+    changelogService: ChangelogService;
     eightBallService: EightBallService;
     memeService: MemeService;
     animeService: AnimeService;
@@ -52,6 +56,8 @@ export interface AppContainerServices {
   economyService: EconomyService;
   chatService: ChatService;
   statusService: StatusService;
+  metricsService: MetricsService;
+  changelogService: ChangelogService;
   eightBallService: EightBallService;
   memeService: MemeService;
   animeService: AnimeService;
@@ -75,6 +81,8 @@ export function registerContainerServices(services: AppContainerServices): void 
   container.economyService = services.economyService;
   container.chatService = services.chatService;
   container.statusService = services.statusService;
+  container.metricsService = services.metricsService;
+  container.changelogService = services.changelogService;
   container.eightBallService = services.eightBallService;
   container.memeService = services.memeService;
   container.animeService = services.animeService;

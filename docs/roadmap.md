@@ -202,10 +202,10 @@ Antes de ir más allá del shell RPG, definir:
 ### Entregables
 
 - [ ] Script one-shot: migrar usuarios/balance/inventario SQLite legacy → v2
-- [ ] Panel de changelog vía `/changelog` (reemplaza `!update` falso)
-- [ ] Documentación de deploy (Docker, VPS, Railway, etc.)
-- [ ] Métricas básicas (uptime, comandos/min) — opcional
-- [ ] Privacy policy / ToS actualizados
+- [x] Panel de changelog vía `/changelog` (reemplaza `!update` falso)
+- [x] Documentación de deploy (Docker, VPS, Railway, etc.)
+- [x] Métricas básicas (uptime, comandos/min) — `/stats` + status embed
+- [x] Privacy policy / ToS actualizados
 
 ---
 
@@ -247,4 +247,6 @@ Una tarea/feature está **done** cuando:
 
 ## Próximo paso inmediato
 
-**Fase 6:** pulido, changelog slash, docs de deploy y migración legacy si aplica.
+**Pendiente opcional de Fase 6:** script de migración legacy → v2 (solo si hay usuarios activos del bot Python).
+
+**Decisión abierta (Fase 4):** ¿RPG cosmético o Fase 4b con gameplay?

@@ -42,6 +42,8 @@ import { createShoukaku, MusicService } from './domain/music/music.service.js';
 import { MusicDownloadService } from './domain/music/music-download.service.js';
 import { GroqProvider } from './infrastructure/llm/groq-provider.js';
 import { StatusService } from './core/status.service.js';
+import { MetricsService } from './core/metrics.service.js';
+import { ChangelogService } from './domain/changelog/changelog.service.js';
 
 const migrationsFolder = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -82,7 +84,9 @@ async function main() {
     memoryService,
     loadSystemPrompt(),
   );
-  const statusService = new StatusService(statusMessageRepository, appLogger);
+  const metricsService = new MetricsService();
+  const changelogService = new ChangelogService();
+  const statusService = new StatusService(statusMessageRepository, appLogger, metricsService);
   const eightBallService = new EightBallService();
   const memeService = new MemeService(httpClient);
   const animeService = new AnimeService(httpClient);
@@ -151,6 +155,8 @@ async function main() {
     economyService,
     chatService,
     statusService,
+    metricsService,
+    changelogService,
     eightBallService,
     memeService,
     animeService,

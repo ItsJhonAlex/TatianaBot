@@ -2,6 +2,7 @@ import { ChannelType, EmbedBuilder, type Client, type TextBasedChannel } from 'd
 import { bot } from '../config/bot.js';
 import type { StatusMessageRepository } from '../infrastructure/db/repositories/status-message.repository.js';
 import type { Logger } from '../lib/logger.js';
+import { formatUptime, type MetricsService } from './metrics.service.js';
 
 type SendableGuildText = Extract<
   TextBasedChannel,
@@ -34,6 +35,7 @@ export class StatusService {
   public constructor(
     private readonly statuses: StatusMessageRepository,
     private readonly logger: Logger,
+    private readonly metrics?: MetricsService,
   ) {}
 
   public async publishOnline(client: Client, channelId: string): Promise<void> {
@@ -44,6 +46,7 @@ export class StatusService {
     }
 
     const channel = fetched;
+    const metrics = this.metrics?.snapshot();
 
     const embed = new EmbedBuilder()
       .setColor(0x57f287)
@@ -52,6 +55,16 @@ export class StatusService {
       .addFields(
         { name: 'Servidores', value: String(client.guilds.cache.size), inline: true },
         { name: 'Versión', value: `v${bot.version}`, inline: true },
+        ...(metrics
+          ? [
+              { name: 'Uptime', value: formatUptime(metrics.uptimeMs), inline: true },
+              {
+                name: 'Cmds / min',
+                value: String(metrics.commandsLastMinute),
+                inline: true,
+              },
+            ]
+          : []),
       )
       .setFooter({ text: 'Última actualización' })
       .setTimestamp(new Date());

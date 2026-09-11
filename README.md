@@ -8,7 +8,7 @@
 ![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)
 ![Sapphire](https://img.shields.io/badge/Sapphire-Framework-5865F2?style=for-the-badge)
 
-[![Versión](https://img.shields.io/badge/versión-2.0.0-blue.svg)](CHANGELOG.md)
+[![Versión](https://img.shields.io/badge/versión-2.6.0-blue.svg)](CHANGELOG.md)
 [![Licencia MIT](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE.md)
 [![Únete a nuestra familia](https://img.shields.io/badge/¡Únete%20a%20nuestra%20familia!-FF69B4?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/2xjXpztFnY)
 
@@ -26,17 +26,19 @@ Tatiana es un bot de Discord con personalidad propia, ambientado en el mundo de 
 
 ## ✨ Características
 
-### Disponibles (v2.5.0 — Fase 5)
+### Disponibles (v2.6.0 — Fase 6)
 
 - 🏓 `/ping` — latencia
 - 💡 `/help` — lista de comandos
+- 📰 `/changelog` — notas de versión
+- 📊 `/stats` — uptime y comandos/min
 - 💰 `/balance`, `/daily`, `/transfer` — economía
 - 🔌 `/shutdown`, `/restart` — admin (owner)
 - 🧠 Chat IA por mención/reply (Groq + Aethoria)
 - 🎱 `/8ball` — bola 8
 - 😂 `/meme` — memes aleatorios
 - 🎭 `/anime` — reacciones GIF (config en `anime-actions.json`)
-- 📊 `/poll` — encuestas con reacciones
+- 🗳️ `/poll` — encuestas con reacciones
 - 🐾 `/pokemon`, `/pokedex` — captura Gen 1 (PokeAPI)
 - 🃏 `/yugioh`, `/deck` — cartas Yu-Gi-Oh! (YGOProDeck)
 - 🔧 `/automod` — moderación custom (+ tip Discord AutoMod nativo)
@@ -51,7 +53,7 @@ Tatiana es un bot de Discord con personalidad propia, ambientado en el mundo de 
 | Fase | Features |
 |---|---|
 | 4b | Gameplay RPG (si se decide) |
-| 6 | Pulido / migración |
+| 6 | Migración datos legacy (si aplica) |
 
 Ver [docs/roadmap.md](docs/roadmap.md) para el plan completo.
 
@@ -115,6 +117,8 @@ bun run start    # producción (Bun ejecuta TypeScript directo)
 bun run typecheck
 ```
 
+Guía completa de producción (VPS, Docker, Railway): [docs/deploy.md](docs/deploy.md).
+
 ### Scripts útiles
 
 | Comando | Descripción |
@@ -173,6 +177,7 @@ Las contribuciones son bienvenidas. Lee [CONTRIBUTING.md](CONTRIBUTING.md) antes
 | Documento | Contenido |
 |---|---|
 | [docs/desarrollo.md](docs/desarrollo.md) | Arquitectura, convenciones, stack |
+| [docs/deploy.md](docs/deploy.md) | Deploy: checklist, VPS, Docker, Railway |
 | [docs/roadmap.md](docs/roadmap.md) | Plan de implementación por fases |
 | [CHANGELOG.md](CHANGELOG.md) | Historial de versiones |
 

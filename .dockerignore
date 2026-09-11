@@ -1,0 +1,14 @@
+.git
+.env
+.env.*
+!.env.example
+node_modules
+data
+legacy
+*.md
+!CHANGELOG.md
+docs
+.github
+coverage
+dist
+*.log
